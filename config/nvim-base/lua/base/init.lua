@@ -8,9 +8,7 @@ vim.opt.breakindent = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = false
-if vim.fn.has('macunix') == 1 then
-	vim.opt.clipboard = 'unnamedplus'
-end
+vim.opt.clipboard = 'unnamedplus'
 vim.opt.splitright = true
 
 vim.keymap.set('n', '<space>w', '<cmd>write<cr>', { desc = 'Save' })
