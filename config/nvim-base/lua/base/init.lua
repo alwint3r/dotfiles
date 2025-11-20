@@ -79,6 +79,7 @@ require('nvim-treesitter.configs').setup({
 		'javascript',
 		'typescript',
 		'tsx',
+		'python',
 	},
 	modules = {},
 	sync_install = false,
