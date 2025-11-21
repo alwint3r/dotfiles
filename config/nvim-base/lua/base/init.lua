@@ -127,6 +127,8 @@ vim.keymap.set('n', '<leader>fg', '<cmd>Telescope live_grep<cr>') -- requires ri
 vim.keymap.set('n', '<leader>fd', '<cmd>Telescope diagnostics<cr>')
 vim.keymap.set('n', '<leader>fs', '<cmd>Telescope current_buffer_fuzzy_find<cr>')
 vim.keymap.set('n', '<leader>fe', '<cmd>Telescope lsp_document_symbols<cr>')
+vim.keymap.set('n', '<leader>ds', '<cmd>Telescope lsp_document_symbols<cr>')
+vim.keymap.set('n', '<leader>ws', '<cmd>Telescope lsp_dynamic_workspace_symbols<cr>')
 
 require('toggleterm').setup({
 	open_mapping = '<C-g>',
