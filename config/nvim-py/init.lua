@@ -62,3 +62,28 @@ vim.lsp.config('basedpyright', {
 	end,
 	capabilities = require('cmp_nvim_lsp').default_capabilities(),
 })
+
+-- Ruff formatter/LSP (uses `uv tool`-installed ruff)
+vim.lsp.config('ruff', {
+	cmd = { 'uv', 'tool', 'run', 'ruff', 'server' },
+	filetypes = { 'python' },
+	root_markers = { 'pyproject.toml', 'ruff.toml', '.ruff.toml', 'setup.py', '.git' },
+	on_attach = function(_, bufnr)
+		local opts = { noremap = true, silent = true, buffer = bufnr }
+
+		-- Ensure python formatting uses ruff when multiple LSP clients are attached.
+		vim.keymap.set('n', '<leader>f', function()
+			vim.lsp.buf.format({
+				async = true,
+				bufnr = bufnr,
+				filter = function(c)
+					return c.name == 'ruff'
+				end,
+			})
+		end, opts)
+
+	end,
+	capabilities = require('cmp_nvim_lsp').default_capabilities(),
+})
+vim.lsp.enable('ruff')
+
