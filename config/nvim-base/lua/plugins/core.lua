@@ -9,7 +9,7 @@ return {
 		---@module "ibl"
 		opts = {},
 	},
-	{ 'nvim-treesitter/nvim-treesitter' },
+	{ 'nvim-treesitter/nvim-treesitter', branch = "master" },
 	{ 'nvim-treesitter/nvim-treesitter-textobjects' },
 	{ 'wellle/targets.vim' },
 	{ 'numToStr/Comment.nvim' },
