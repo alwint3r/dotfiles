@@ -33,7 +33,21 @@ require("lazy").setup({
   change_detection = { notify = false },
 })
 
-require("lsp.clangd")()
+local function clangd_args_from_env()
+	local raw = vim.env.NVIM_CPP_CLANGD_ARGS or vim.env.CLANGD_ARGS
+	if not raw or raw == "" then
+		return nil
+	end
+
+	local args = vim.split(raw, "%s+", { trimempty = true })
+	if vim.tbl_isempty(args) then
+		return nil
+	end
+
+	return args
+end
+
+require("lsp.clangd")(clangd_args_from_env())
 
 vim.keymap.set('n', '<leader>b', '<cmd>TermExec cmd="./build.sh"<cr>', { desc = 'Build project' })
 vim.keymap.set('n', '<leader>r', '<cmd>TermExec cmd="./run.sh"<cr>', { desc = 'Run project' })
