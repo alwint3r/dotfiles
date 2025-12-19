@@ -32,21 +32,15 @@ require("lazy").setup({
   change_detection = { notify = false },
 })
 
-vim.lsp.enable('basedpyright')
-vim.lsp.config('basedpyright', {
+vim.lsp.config('ty', {
 	cmd = {
-		"basedpyright-langserver",
-		"--stdio",
+		"ty",
+		"server",
 	},
 	filetypes = { "python" },
-	root_markers = { "pyproject.toml", "setup.py", ".git" },
+	root_markers = { "ty.toml", "pyproject.toml", "setup.py", ".git" },
 	settings = {
-		basedpyright = {
-			analysis = {
-				autoSearchPaths = true,
-				diagnosticMode = "openFilesOnly",
-				useLibraryCodeForTypes = true,
-			}
+		ty = {
 		}
 	},
 	on_attach = function(client, bufnr)
@@ -62,6 +56,7 @@ vim.lsp.config('basedpyright', {
 	end,
 	capabilities = require('cmp_nvim_lsp').default_capabilities(),
 })
+vim.lsp.enable('ty')
 
 -- Ruff formatter/LSP (uses `uv tool`-installed ruff)
 vim.lsp.config('ruff', {
