@@ -121,11 +121,17 @@ apply_gopls_settings(gopls_config)
 vim.lsp.config('gopls', gopls_config)
 vim.lsp.enable('gopls')
 
--- Diagnostic signs
-vim.fn.sign_define('DiagnosticSignError', { text = '✘', texthl = 'DiagnosticSignError' })
-vim.fn.sign_define('DiagnosticSignWarn', { text = '▲', texthl = 'DiagnosticSignWarn' })
-vim.fn.sign_define('DiagnosticSignInfo', { text = 'ⓘ', texthl = 'DiagnosticSignInfo' })
-vim.fn.sign_define('DiagnosticSignHint', { text = '▶', texthl = 'DiagnosticSignHint' })
+-- Diagnostic signs (Neovim 0.10+: configure via vim.diagnostic.config)
+vim.diagnostic.config({
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = '✘',
+      [vim.diagnostic.severity.WARN] = '▲',
+      [vim.diagnostic.severity.INFO] = 'ⓘ',
+      [vim.diagnostic.severity.HINT] = '▶',
+    },
+  },
+})
 
 -- Show diagnostics in floating window on hover
 vim.api.nvim_create_autocmd('CursorHold', {
