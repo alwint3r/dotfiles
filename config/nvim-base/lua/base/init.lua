@@ -105,6 +105,8 @@ require('nvim-tree').setup({
 vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeToggle<cr>')
 vim.keymap.set('n', '<leader>ntf', '<cmd>NvimTreeFocus<cr>')
 
+local gfh_actions = require('telescope').extensions.git_file_history.actions
+
 require('telescope').setup({
 	extensions = {
 		fzf = {
@@ -116,21 +118,39 @@ require('telescope').setup({
 		["ui-select"] = {
 			require('telescope.themes').get_dropdown {}
 		},
+		["git_file_history"] = {
+			mappings = {
+				i = {
+					["<leader>go"] = gfh_actions.open_in_browser,
+				},
+				n = {
+					["<leader>go"] = gfh_actions.open_in_browser,
+				}
+			},
+			browser_command = nil,
+		},
+		advanced_git_search = {},
 	},
 })
 require('telescope').load_extension('fzf')
 require('telescope').load_extension('ui-select')
+require('telescope').load_extension('git_file_history')
+require('telescope').load_extension('advanced_git_search')
 
 -- Telescope Key Bindings
 vim.keymap.set('n', '<leader><space>', '<cmd>Telescope buffers<cr>')
 vim.keymap.set('n', '<leader>?', '<cmd>Telescope oldfiles<cr>')
 vim.keymap.set('n', '<leader>ff', '<cmd>Telescope find_files<cr>')
+vim.keymap.set('n', '<leader>fb', '<cmd>Telescope buffers<cr>')
 vim.keymap.set('n', '<leader>fg', '<cmd>Telescope live_grep<cr>') -- requires ripgrep
 vim.keymap.set('n', '<leader>fd', '<cmd>Telescope diagnostics<cr>')
 vim.keymap.set('n', '<leader>fs', '<cmd>Telescope current_buffer_fuzzy_find<cr>')
 vim.keymap.set('n', '<leader>fe', '<cmd>Telescope lsp_document_symbols<cr>')
 vim.keymap.set('n', '<leader>ds', '<cmd>Telescope lsp_document_symbols<cr>')
 vim.keymap.set('n', '<leader>ws', '<cmd>Telescope lsp_dynamic_workspace_symbols<cr>')
+vim.keymap.set('n', '<leader>gs', function()
+	require('telescope').extensions.advanced_git_search.show_custom_functions()
+end, { desc = 'Advanced Git Search' })
 
 require('toggleterm').setup({
 	open_mapping = '<C-g>',

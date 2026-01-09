@@ -53,4 +53,7 @@ return {
 			}
 		},
 	},
+	{ 'isak102/telescope-git-file-history.nvim' },
+	{ 'aaronhallaert/advanced-git-search.nvim' },
+	{ 'tpope/vim-rhubarb' },
 }
