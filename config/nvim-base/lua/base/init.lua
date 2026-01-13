@@ -17,6 +17,11 @@ vim.g.mapleader = ','
 vim.keymap.set('n', '<leader>w', '<cmd>write<cr>')
 vim.keymap.set('n', '<leader>wq', '<cmd>write<bar>quit<cr>')
 vim.keymap.set('n', '<leader>q', '<cmd>quit<cr>')
+vim.keymap.set('n', '<leader>yp', ':let @+=expand("%:p")<CR>', {
+	noremap = true,
+	silent = true,
+	desc = "Copy file path",
+})
 
 vim.keymap.set({ 'x', 'n' }, 'gy', '"+y')
 vim.keymap.set({ 'x', 'n' }, 'gp', '"+p')
