@@ -248,6 +248,11 @@ vim.keymap.set('n', '<leader>d', function()
 	})
 end, { desc = 'Show diagnostics' })
 
+vim.lsp.config('sqruff', {
+})
+
+vim.lsp.enable('sqruff')
+
 -- Copilot & Copilot Chat
 vim.g.copilot_enabled = 0
 vim.g.copilot_no_tab_map = true
