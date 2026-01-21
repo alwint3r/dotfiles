@@ -2,7 +2,7 @@
 return {
 	{ 'folke/tokyonight.nvim' },
 	{ 'nvim-lualine/lualine.nvim' },
-	{ 'akinsho/bufferline.nvim' },
+	{ 'akinsho/bufferline.nvim', version = "*" },
 	{
 		'lukas-reineke/indent-blankline.nvim',
 		main = 'ibl',

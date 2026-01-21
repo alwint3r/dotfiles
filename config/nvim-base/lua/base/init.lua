@@ -50,7 +50,18 @@ require('lualine').setup({
 	}
 })
 
-require('bufferline').setup({})
+require('bufferline').setup({
+	options = {
+		offsets = {
+			{
+				filetype = "NvimTree",
+				text = "File Explorer",
+				highlight = "Directory",
+				separator = true,
+			},
+		},
+	},
+})
 vim.keymap.set('n', '<Tab>', '<cmd>BufferLineCycleNext<cr>', { silent = true })
 vim.keymap.set('n', '<S-Tab>', '<cmd>BufferLineCyclePrev<cr>', { silent = true })
 
