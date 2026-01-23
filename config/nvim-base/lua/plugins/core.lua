@@ -56,4 +56,12 @@ return {
 	{ 'isak102/telescope-git-file-history.nvim' },
 	{ 'aaronhallaert/advanced-git-search.nvim' },
 	{ 'tpope/vim-rhubarb' },
+	{ 'iamcco/markdown-preview.nvim',
+		cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+		build = "cd app && npm install && git restore .",
+		init = function()
+			vim.g.mkdp_filetypes = { "markdown" }
+		end,
+		ft = { "markdown" },
+	},
 }
