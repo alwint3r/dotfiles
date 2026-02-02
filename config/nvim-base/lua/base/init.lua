@@ -182,6 +182,9 @@ require('toggleterm').setup({
 	end,
 })
 
+vim.keymap.set('n', '<leader>ts', '<cmd>TermSelect<cr>')
+vim.keymap.set('n', '<leader>tn', '<cmd>TermNew<cr>')
+
 vim.lsp.config('lua_ls', {
 	filetypes = { "lua" },
 	root_markers = {
