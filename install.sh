@@ -2,42 +2,51 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
-SOURCE_DIR="${SCRIPT_DIR}/config"
-TARGET_DIR="${HOME}/.config"
 STATUS=0
 
-if [ ! -d "$SOURCE_DIR" ]; then
-  echo "Source config directory not found at ${SOURCE_DIR}" >&2
-  exit 1
-fi
+install_dir() {
+  local source_dir="$1"
+  local target_dir="$2"
 
-mkdir -p "$TARGET_DIR"
+  if [ ! -d "$source_dir" ]; then
+    echo "Source directory not found at ${source_dir}" >&2
+    STATUS=1
+    return
+  fi
 
-shopt -s nullglob dotglob
-for item in "$SOURCE_DIR"/*; do
-  [ -e "$item" ] || continue
-  name="$(basename -- "$item")"
-  target="${TARGET_DIR}/${name}"
+  mkdir -p "$target_dir"
 
-  if [ -L "$target" ]; then
-    link_target="$(readlink "$target")"
-    if [ "$link_target" = "$item" ]; then
-      echo "Symlink already exists for ${name}"
-      continue
-    else
-      echo "Conflicting symlink at ${target}; remove it manually" >&2
+  shopt -s nullglob dotglob
+  for item in "$source_dir"/*; do
+    [ -e "$item" ] || continue
+    local name
+    name="$(basename -- "$item")"
+    local target="${target_dir}/${name}"
+
+    if [ -L "$target" ]; then
+      local link_target
+      link_target="$(readlink "$target")"
+      if [ "$link_target" = "$item" ]; then
+        echo "Symlink already exists for ${name}"
+        continue
+      else
+        echo "Conflicting symlink at ${target}; remove it manually" >&2
+        STATUS=1
+        continue
+      fi
+    elif [ -e "$target" ]; then
+      echo "${target} already exists and is not a symlink; skipping" >&2
       STATUS=1
       continue
     fi
-  elif [ -e "$target" ]; then
-    echo "${target} already exists and is not a symlink; skipping" >&2
-    STATUS=1
-    continue
-  fi
 
-  ln -s "$item" "$target"
-  echo "Created symlink ${target} -> ${item}"
-done
-shopt -u nullglob dotglob
+    ln -s "$item" "$target"
+    echo "Created symlink ${target} -> ${item}"
+  done
+  shopt -u nullglob dotglob
+}
+
+install_dir "${SCRIPT_DIR}/config" "${HOME}/.config"
+install_dir "${SCRIPT_DIR}/.agent" "${HOME}/.agent"
 
 exit $STATUS
