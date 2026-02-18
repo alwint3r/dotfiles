@@ -1,0 +1,4 @@
+interface:
+  display_name: "Semantic Compression Agent"
+  short_description: "Compress coding intent into executable code plans"
+  default_prompt: "Use $semantic-compression-agent to compress this code-change request into constraints and invariants, then decompress it into concrete edits and tests."
