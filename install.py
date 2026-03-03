@@ -49,7 +49,7 @@ def install_dir(source_dir: Path, target_dir: Path) -> None:
 
 def main() -> int:
     install_dir(SCRIPT_DIR / "config", Path.home() / ".config")
-    install_dir(SCRIPT_DIR / ".agent", Path.home() / ".agent")
+    install_dir(SCRIPT_DIR / ".agents", Path.home() / ".agents")
     return STATUS
 
 

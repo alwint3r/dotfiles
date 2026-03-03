@@ -1,0 +1,4 @@
+interface:
+  display_name: "Exec Planner"
+  short_description: "Create robust, executable implementation plans"
+  default_prompt: "Use $exec-planner to generate a self-contained ExecPlan, persist it under .agent/execplans/ in the project working directory, and continue with embedded fallback rules if PLANS references fail to load."

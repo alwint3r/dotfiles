@@ -47,6 +47,6 @@ install_dir() {
 }
 
 install_dir "${SCRIPT_DIR}/config" "${HOME}/.config"
-install_dir "${SCRIPT_DIR}/.agent" "${HOME}/.agent"
+install_dir "${SCRIPT_DIR}/.agents" "${HOME}/.agents"
 
 exit $STATUS
