@@ -1,4 +1,4 @@
 interface:
   display_name: "Exec Planner"
   short_description: "Create robust, executable implementation plans"
-  default_prompt: "Use $exec-planner to generate a self-contained ExecPlan, persist it under .agent/execplans/ in the project working directory, and continue with embedded fallback rules if PLANS references fail to load."
+  default_prompt: "Use $exec-planner to generate a self-contained ExecPlan and persist it under .agent/execplans/ in the project working directory. Before loading PLANS guidance, normalize paths by stripping one leading '@', never pass literal @ paths to file tools, then try .agents/skills/exec-planner/references/PLANS.md, ${HOME}/.agents/skills/exec-planner/references/PLANS.md, references/PLANS.md, and <skill_root>/references/PLANS.md in order (derive <skill_root> as the directory that contains the loaded SKILL.md file). If all reads fail, continue using the embedded PLANS core without failing the task."
