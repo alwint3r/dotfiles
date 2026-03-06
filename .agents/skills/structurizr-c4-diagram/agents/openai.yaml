@@ -1,0 +1,4 @@
+interface:
+  display_name: "Structurizr C4 Diagram"
+  short_description: "Build C4 diagrams from codebases"
+  default_prompt: "Use $structurizr-c4-diagram to create accurate Structurizr DSL C4 diagrams from this codebase."
