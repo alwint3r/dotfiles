@@ -32,12 +32,8 @@ workspace "System Name" "C4 model for the system in scope." {
                 shape Person
             }
             element "Software System" {
-                background #1168bd
-                color #ffffff
             }
             element "Container" {
-                background #438dd5
-                color #ffffff
             }
             element "Database" {
                 shape Cylinder
