@@ -1,0 +1,4 @@
+interface:
+  display_name: "Draft User Manual"
+  short_description: "Draft or revise user manuals"
+  default_prompt: "Use $draft-user-manual to draft or revise a product user manual in the requested language."
