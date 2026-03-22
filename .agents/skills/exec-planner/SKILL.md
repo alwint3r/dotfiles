@@ -15,6 +15,26 @@ Use this skill when work needs careful planning before implementation, especiall
 - migration work
 - any request that explicitly asks for an execution plan
 
+## Research and Write-Access Policy
+
+Create the first ExecPlan draft early, not after exhaustive research.
+
+1. Start with minimal reconnaissance of the current working directory:
+   - inspect the top-level repository state
+   - identify the most likely files or modules involved
+   - capture the main constraints, assumptions, and unknowns
+2. Do not perform broad or deep codebase research before the first ExecPlan draft exists.
+3. If write permission is not available yet:
+   - draft the full ExecPlan inline in chat immediately after minimal reconnaissance
+   - keep the required section structure
+   - mark unresolved details explicitly with `TBD` or equivalent notes
+   - stop short of implementation edits
+4. If write permission is available:
+   - perform the same minimal reconnaissance
+   - write the initial ExecPlan file under `.agent/execplans/` before implementation edits
+   - then continue deeper research, updating the same plan as discoveries are made
+5. Never let the first saved or shared ExecPlan appear already complete unless the task itself is already complete.
+
 ## Resource Loading (Robust)
 
 Before writing the ExecPlan, load PLANS guidance using this exact normalization and lookup sequence:
@@ -84,6 +104,9 @@ Apply these rules whenever external `PLANS.md` cannot be loaded. Even when `PLAN
 13. If the plan is provided inline in chat, emit one fenced `md` block and do not nest triple-backtick fences inside it. If the plan is written directly to a `.md` file whose entire content is the plan, omit outer triple backticks.
 14. When revising the plan, propagate updates across all sections and append a short change note at the bottom describing what changed and why.
 15. During implementation from an ExecPlan, do not ask the user for next steps; proceed to the next milestone autonomously.
+16. Perform only minimal working-tree reconnaissance before the first draft; deeper research belongs after the initial ExecPlan exists.
+17. If write permission is unavailable, produce the full skeleton inline with explicit unknowns instead of delaying for more research.
+18. If write permission is available, persist the initial ExecPlan before any implementation edits.
 
 ## Formatting Rules
 
@@ -95,12 +118,13 @@ Apply these rules whenever external `PLANS.md` cannot be loaded. Even when `PLAN
 
 1. Resolve PLANS guidance source using the Resource Loading sequence, then follow that guidance.
 2. Resolve purpose and user-visible outcome first.
-3. Read relevant repository files deeply enough to remove ambiguity.
-4. Draft context and work plan with exact file paths and function/module targets.
-5. Write concrete execution and validation steps with expected outcomes.
-6. Initialize living sections (`Progress`, `Surprises & Discoveries`, `Decision Log`, `Outcomes & Retrospective`).
-7. Save the plan under `.agent/execplans/` using the required naming convention.
-8. When implementation starts, continuously update the same plan file as a living document.
+3. Perform minimal reconnaissance of the current working tree to identify likely files, constraints, and open questions.
+4. Draft the initial ExecPlan immediately, even if some details are still marked `TBD`.
+5. If write permission is available, save the initial plan under `.agent/execplans/` using the required naming convention before implementation edits. If write permission is unavailable, emit the draft inline and stop before implementation.
+6. After the first draft exists, deepen repository research only as needed to remove important ambiguity.
+7. Write or refine concrete execution and validation steps with expected outcomes.
+8. Initialize and maintain the living sections (`Progress`, `Surprises & Discoveries`, `Decision Log`, `Outcomes & Retrospective`).
+9. When implementation starts, continuously update the same plan file as a living document.
 
 ## Completion Checklist
 
@@ -111,6 +135,8 @@ Before finishing, verify:
 - PLANS guidance was loaded from a valid source, or fallback core rules were applied
 - the plan is self-contained and novice-usable
 - required sections exist and are populated
+- the first plan draft was created after minimal reconnaissance rather than exhaustive pre-research
+- unresolved details are called out explicitly instead of being silently deferred
 - commands and acceptance checks are concrete
 - file paths are explicit and repository-relative
-- the plan was saved to `.agent/execplans/` with a unique name
+- if write permission was available, the plan was saved to `.agent/execplans/` with a unique name before implementation edits

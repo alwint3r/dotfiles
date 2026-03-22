@@ -4,13 +4,13 @@ This document describes the requirements for an execution plan ("ExecPlan"), a d
  
 ## How to use ExecPlans and PLANS.md
  
-When authoring an executable specification (ExecPlan), follow PLANS.md _to the letter_. If it is not in your context, refresh your memory by reading the entire PLANS.md file. Be thorough in reading (and re-reading) source material to produce an accurate specification. When creating a spec, start from the skeleton and flesh it out as you do your research.
+When authoring an executable specification (ExecPlan), follow PLANS.md _to the letter_. If it is not in your context, refresh your memory by reading the entire PLANS.md file. Start with only enough repository research to identify the current state, likely touch points, and major unknowns. When creating a spec, start from the skeleton immediately and flesh it out as you do further research. Do not wait for exhaustive understanding before producing the first draft.
  
 When implementing an executable specification (ExecPlan), do not prompt the user for "next steps"; simply proceed to the next milestone. Keep all sections up to date, add or split entries in the list at every stopping point to affirmatively state the progress made and next steps. Resolve ambiguities autonomously, and commit frequently.
  
 When discussing an executable specification (ExecPlan), record decisions in a log in the spec for posterity; it should be unambiguously clear why any change to the specification was made. ExecPlans are living documents, and it should always be possible to restart from _only_ the ExecPlan and no other work.
  
-When researching a design with challenging requirements or significant unknowns, use milestones to implement proof of concepts, "toy implementations", etc., that allow validating whether the user's proposal is feasible. Read the source code of libraries by finding or acquiring them, research deeply, and include prototypes to guide a fuller implementation.
+When researching a design with challenging requirements or significant unknowns, use milestones to implement proof of concepts, "toy implementations", etc., that allow validating whether the user's proposal is feasible. That deeper research happens after the first ExecPlan draft exists. The first meaningful artifact should still be the ExecPlan skeleton populated with current facts, assumptions, and explicit unknowns.
  
 ## Requirements
  
@@ -25,6 +25,8 @@ NON-NEGOTIABLE REQUIREMENTS:
 Purpose and intent come first. Begin by explaining, in a few sentences, why the work matters from a user's perspective: what someone can do after this change that they could not do before, and how to see it working. Then guide the reader through the exact steps to achieve that outcome, including what to edit, what to run, and what they should observe.
  
 The agent executing your plan can list files, read files, search, run the project, and run tests. It does not know any prior context and cannot infer what you meant from earlier milestones. Repeat any assumption you rely on. Do not point to external blogs or docs; if knowledge is required, embed it in the plan itself in your own words. If an ExecPlan builds upon a prior ExecPlan and that file is checked in, incorporate it by reference. If it is not, you must include all relevant context from that plan.
+
+If the environment is read-only or write permission has not yet been granted, draft the full ExecPlan inline immediately after minimal reconnaissance. Keep every required section, and use clearly marked placeholders such as `TBD` for details that require later confirmation. Once write permission is available, persist the ExecPlan before making implementation edits and continue refining that same living document.
  
 ## Formatting
  
@@ -33,6 +35,8 @@ Format and envelope are simple and strict. Each ExecPlan must be one single fenc
 When writing an ExecPlan to a Markdown (.md) file where the content of the file *is only* the single ExecPlan, you should omit the triple backticks.
  
 Write in plain prose. Prefer sentences over lists. Avoid checklists, tables, and long enumerations unless brevity would obscure meaning. Checklists are permitted only in the `Progress` section, where they are mandatory. Narrative sections must remain prose-first.
+
+The first draft must look like an active plan, not a finished retrospective. If implementation has not happened yet, say so plainly in `Progress`, `Outcomes & Retrospective`, and related sections rather than filling them as though the work were already done.
  
 ## Guidelines
  
