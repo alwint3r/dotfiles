@@ -34,10 +34,19 @@ vim.keymap.set('n', '<leader>a', ':keepjumps normal! ggVG<cr>')
 
 -- general plugin configurations
 
+local lazy_spec = {
+	{ import = "plugins.core" },
+}
+
+-- Profiles can extend the base plugin set by declaring imports before
+-- `require("base")`, instead of calling `lazy.setup()` a second time.
+for _, import in ipairs(vim.g.dotfiles_lazy_imports or {}) do
+	table.insert(lazy_spec, { import = import })
+end
+
 require("lazy").setup({
-	spec = {
-		{ import = "plugins.core" },
-	},
+	spec = lazy_spec,
+	lockfile = vim.g.dotfiles_lazy_lockfile,
 	change_detection = { notify = false },
 })
 
@@ -67,6 +76,19 @@ vim.keymap.set('n', '<S-Tab>', '<cmd>BufferLineCyclePrev<cr>', { silent = true }
 
 require('ibl').setup({})
 
+local function prefer_builtin_parser(lang)
+	if vim.fn.has('nvim-0.12') == 0 then
+		return
+	end
+
+	for _, path in ipairs(vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', true)) do
+		if not path:match('/nvim%-treesitter/') then
+			pcall(vim.treesitter.language.add, lang, { path = path })
+			return
+		end
+	end
+end
+
 local function setup_treesitter()
 	local parsers = {
 		'c',
@@ -95,6 +117,10 @@ local function setup_treesitter()
 		},
 	}
 	local parser_install_dir = vim.fn.stdpath('data') .. '/site'
+
+	-- Neovim 0.12 ships a Lua parser that matches its built-in queries.
+	-- Prefer it over an older nvim-treesitter copy to avoid startup errors.
+	prefer_builtin_parser('lua')
 
 	vim.opt.runtimepath:prepend(parser_install_dir)
 
@@ -152,7 +178,6 @@ local function setup_treesitter()
 	configs.setup({
 		highlight = {
 			enable = true,
-			disable = { "markdown" },
 		},
 		textobjects = textobjects,
 		ensure_installed = parsers,
@@ -168,17 +193,6 @@ require('Comment').setup()
 
 require('nvim-tree').setup({
 	hijack_cursor = false,
-	on_attach = function(bufnr)
-		local bufmap = function(lhs, rhs, desc)
-			vim.keymap.set('n', lhs, rhs, { buffer = bufnr, desc = desc })
-		end
-
-		local api = require('nvim-tree.api')
-		api.config.mappings.default_on_attach(bufnr)
-		-- bufmap('L', api.node.open.edit, 'Expand folder or go to file')
-		-- bufmap('H', api.node.navigate.parent_close, 'Close parent folder')
-		-- bufmap('gh', api.tree.toggle_hidden_filter, 'Toggle hidden files')
-	end
 })
 
 vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeToggle<cr>')

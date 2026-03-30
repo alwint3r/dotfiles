@@ -7,6 +7,7 @@ end
 
 vim.opt.rtp:prepend(base)
 package.path = base .. "/lua/?.lua;" .. base .. "/lua/?/init.lua;" .. package.path
+vim.g.dotfiles_lazy_lockfile = base .. "/lazy-lock.json"
 
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -24,14 +25,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("base")
-
-require("lazy").setup({
-  spec = {
-    { import = "plugins.core" },  -- from base
-    { import = "plugins.lang" },  -- this profile
-  },
-  change_detection = { notify = false },
-})
 
 local function clangd_args_from_env()
 	local raw = vim.env.NVIM_CPP_CLANGD_ARGS or vim.env.CLANGD_ARGS

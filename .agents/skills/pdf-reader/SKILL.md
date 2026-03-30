@@ -1,6 +1,6 @@
 ---
 name: pdf-reader
-description: Read PDFs by rendering pages to per-page PNG images with pdftoppm, then inspect the rendered pages visually before answering. Use this for page-specific reading, ranged-reading, scanned PDFs, slide decks, tables, diagram, and other layout-sensitive documents.
+description: Read PDFs by rendering pages to per-page PNG images with pdftoppm, then inspect the rendered pages visually before answering. Use this for page-specific reading, ranged-reading, scanned PDFs, slide decks, tables, diagrams, hardware schematics, datasheets, and other layout-sensitive documents.
 ---
 # PDF Reading Skill for Agentic AIs (using `pdftoppm`)
 
@@ -9,6 +9,8 @@ description: Read PDFs by rendering pages to per-page PNG images with pdftoppm, 
 Use this skill when you need to read, inspect, review, or extract information from a PDF by first rasterizing pages into PNG images with `pdftoppm`. This workflow is reliable for page-by-page visual inspection, region-aware reading, scanned PDFs, mixed-layout documents, and verifying what a human would actually see.
 
 This skill is for **reading/review**, not primary editing.
+
+For hardware schematics, wiring diagrams, pinout sheets, board drawings, and electrical/component datasheets, this skill is mandatory. Those documents are safety-critical and must not be answered from raw text extraction alone.
 
 ---
 
@@ -34,6 +36,8 @@ For PDF reading tasks, prefer this workflow:
 2. Inspect images page by page
 3. Optionally combine with text extraction only after visual inspection
 4. Cite page numbers explicitly in the final answer
+
+For hardware schematics or datasheets, do not skip or reorder these steps. Visual inspection comes first, because misreading a label, note, polarity mark, pin number, tolerance, or warning can damage hardware.
 
 Do **not** rely only on raw text extraction when any of the following matter:
 
@@ -165,6 +169,7 @@ Use when pages look like photographs or scans.
 * the PDF contains figures or screenshots,
 * the PDF is a slide deck,
 * the PDF uses multiple columns,
+* the PDF is a hardware schematic, wiring diagram, board drawing, or component datasheet,
 * the user asks about a specific table/chart,
 * the PDF may be scanned,
 * the exact visual placement matters.
@@ -251,6 +256,7 @@ When answering the user:
 * always mention the relevant page number(s),
 * separate direct observations from inference,
 * state uncertainty when a page is blurry, occluded, or ambiguous,
+* for hardware documents, call out any ambiguity that could affect wiring, polarity, pin mapping, voltages, current limits, or component orientation,
 * do not claim text that was not actually visible or extractable.
 
 Good pattern:
@@ -339,6 +345,7 @@ find /tmp/pdf_pages -name 'page-*.png' | wc -l
    * uncertainty.
 6. For user-facing answers, cite page numbers naturally.
 7. Never hallucinate unreadable text.
+8. Treat hardware PDFs as high-risk documents and default to the most conservative interpretation when anything is unclear.
 
 ---
 
@@ -346,12 +353,13 @@ find /tmp/pdf_pages -name 'page-*.png' | wc -l
 
 ```md
 name: pdf-read-pdftoppm
-description: Read PDFs by rendering pages to PNG with pdftoppm, then inspect pages visually before answering. Use for page-specific reading, ranged reading, scanned PDFs, slide decks, tables, and layout-sensitive documents.
+description: Read PDFs by rendering pages to PNG with pdftoppm, then inspect pages visually before answering. Use for page-specific reading, ranged reading, scanned PDFs, slide decks, tables, hardware schematics, datasheets, and layout-sensitive documents.
 
 Instructions:
 - Render requested pages with pdftoppm to per-page PNG files.
 - Use 200 DPI by default, 300 DPI for dense or scanned pages.
 - Prefer visual inspection before any text extraction.
+- Always use this workflow for hardware schematics and datasheets.
 - Preserve page numbers in notes and in the final answer.
 - For single-page requests, optionally inspect neighbor pages for context.
 - If text is unreadable, rerender only affected pages at higher DPI.

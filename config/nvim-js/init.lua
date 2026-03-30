@@ -7,6 +7,10 @@ end
 
 vim.opt.rtp:prepend(base)
 package.path = base .. "/lua/?.lua;" .. base .. "/lua/?/init.lua;" .. package.path
+vim.g.dotfiles_lazy_lockfile = base .. "/lazy-lock.json"
+-- Optional per-profile plugin imports belong here if this profile grows beyond
+-- the shared base plugin set.
+-- vim.g.dotfiles_lazy_imports = { "plugins.lang" }
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -23,14 +27,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("base")
-
-require("lazy").setup({
-  spec = {
-    { import = "plugins.core" },  -- from base
-    { import = "plugins.lang" },  -- this profile
-  },
-  change_detection = { notify = false },
-})
 
 local telescope = require('telescope.builtin')
 local lsp = vim.lsp

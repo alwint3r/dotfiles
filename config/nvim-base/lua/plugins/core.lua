@@ -1,11 +1,11 @@
 local function treesitter_build()
-	if vim.fn.executable('tree-sitter') == 1 then
+	if vim.fn.exists(':TSUpdate') > 0 then
 		vim.cmd('TSUpdate')
 		return
 	end
 
 	vim.notify(
-		'Skipping :TSUpdate because tree-sitter CLI is not installed.',
+		'Skipping :TSUpdate because the command is unavailable.',
 		vim.log.levels.WARN
 	)
 end

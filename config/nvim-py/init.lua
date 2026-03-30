@@ -7,6 +7,7 @@ end
 
 vim.opt.rtp:prepend(base)
 package.path = base .. "/lua/?.lua;" .. base .. "/lua/?/init.lua;" .. package.path
+vim.g.dotfiles_lazy_lockfile = base .. "/lazy-lock.json"
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -23,14 +24,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("base")
-
-require("lazy").setup({
-  spec = {
-    { import = "plugins.core" },  -- from base
-    { import = "plugins.lang" },  -- this profile
-  },
-  change_detection = { notify = false },
-})
 
 vim.lsp.config('ty', {
 	cmd = {
@@ -81,4 +74,3 @@ vim.lsp.config('ruff', {
 	capabilities = require('cmp_nvim_lsp').default_capabilities(),
 })
 vim.lsp.enable('ruff')
-
