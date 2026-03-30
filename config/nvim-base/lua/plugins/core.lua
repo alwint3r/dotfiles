@@ -1,3 +1,14 @@
+local function treesitter_build()
+	if vim.fn.executable('tree-sitter') == 1 then
+		vim.cmd('TSUpdate')
+		return
+	end
+
+	vim.notify(
+		'Skipping :TSUpdate because tree-sitter CLI is not installed.',
+		vim.log.levels.WARN
+	)
+end
 
 return {
 	{ 'folke/tokyonight.nvim' },
@@ -9,8 +20,19 @@ return {
 		---@module "ibl"
 		opts = {},
 	},
-	{ 'nvim-treesitter/nvim-treesitter', branch = "master" },
-	{ 'nvim-treesitter/nvim-treesitter-textobjects' },
+	{
+		'nvim-treesitter/nvim-treesitter',
+		branch = "main",
+		lazy = false,
+		build = treesitter_build,
+	},
+	{
+		'nvim-treesitter/nvim-treesitter-textobjects',
+		branch = "main",
+		dependencies = {
+			{ 'nvim-treesitter/nvim-treesitter' },
+		},
+	},
 	{ 'wellle/targets.vim' },
 	{ 'numToStr/Comment.nvim' },
 	{ 'tpope/vim-surround' },

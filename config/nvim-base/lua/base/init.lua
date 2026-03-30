@@ -67,23 +67,8 @@ vim.keymap.set('n', '<S-Tab>', '<cmd>BufferLineCyclePrev<cr>', { silent = true }
 
 require('ibl').setup({})
 
-require('nvim-treesitter.configs').setup({
-	highlight = {
-		enable = true,
-	},
-	textobjects = {
-		select = {
-			enable = true,
-			lookahead = true,
-			keymaps = {
-				['af'] = '@function.outer',
-				['if'] = '@function.inner',
-				['ac'] = '@class.outer',
-				['ic'] = '@class.inner',
-			},
-		},
-	},
-	ensure_installed = {
+local function setup_treesitter()
+	local parsers = {
 		'c',
 		'cpp',
 		'cmake',
@@ -96,11 +81,89 @@ require('nvim-treesitter.configs').setup({
 		'python',
 		'rust',
 		'markdown',
-	},
-	modules = {},
-	sync_install = false,
-	ignore_install = {},
-})
+	}
+	local textobjects = {
+		select = {
+			enable = true,
+			lookahead = true,
+			keymaps = {
+				['af'] = '@function.outer',
+				['if'] = '@function.inner',
+				['ac'] = '@class.outer',
+				['ic'] = '@class.inner',
+			},
+		},
+	}
+	local parser_install_dir = vim.fn.stdpath('data') .. '/site'
+
+	vim.opt.runtimepath:prepend(parser_install_dir)
+
+	local ok_ts, ts = pcall(require, 'nvim-treesitter')
+	if not ok_ts then
+		return
+	end
+
+	local is_main_branch = type(ts.install) == 'function'
+	if is_main_branch then
+		ts.setup({
+			install_dir = parser_install_dir,
+		})
+
+		local ok_configs, configs = pcall(require, 'nvim-treesitter.configs')
+		if ok_configs then
+			configs.setup({
+				textobjects = textobjects,
+			})
+		end
+
+		local group = vim.api.nvim_create_augroup('dotfiles-treesitter-highlight', { clear = true })
+		vim.api.nvim_create_autocmd('FileType', {
+			group = group,
+			callback = function(args)
+				if vim.bo[args.buf].buftype ~= '' or vim.bo[args.buf].filetype == 'markdown' then
+					return
+				end
+
+				pcall(vim.treesitter.start, args.buf)
+			end,
+		})
+
+		return
+	end
+
+	if vim.fn.has('nvim-0.12') == 1 then
+		if not vim.g.dotfiles_treesitter_master_warned then
+			vim.g.dotfiles_treesitter_master_warned = true
+			vim.schedule(function()
+				vim.notify(
+					'nvim-treesitter master is incompatible with Neovim 0.12. Run :Lazy sync, then restart Neovim.',
+					vim.log.levels.WARN
+				)
+			end)
+		end
+		return
+	end
+
+	local ok_configs, configs = pcall(require, 'nvim-treesitter.configs')
+	if not ok_configs then
+		return
+	end
+
+	configs.setup({
+		highlight = {
+			enable = true,
+			disable = { "markdown" },
+		},
+		textobjects = textobjects,
+		ensure_installed = parsers,
+		parser_install_dir = parser_install_dir,
+		modules = {},
+		sync_install = false,
+		ignore_install = {},
+	})
+end
+
+setup_treesitter()
 require('Comment').setup()
 
 require('nvim-tree').setup({
