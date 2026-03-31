@@ -1,50 +1,44 @@
 # Codebase to Course
 
-A Claude Code skill that turns any codebase into a beautiful, interactive single-page HTML course.
+A skill that turns any codebase into a beautiful, interactive HTML course designed to help a human learner truly understand how the system works.
 
-Point it at a repo. Get back a stunning, self-contained course that teaches how the code works — with scroll-based navigation, animated visualizations, embedded quizzes, and code-with-plain-English side-by-side translations.
+Point it at a repo. Get back a self-contained course directory that teaches the codebase through scroll-based modules, animated visualizations, embedded quizzes, code-to-plain-language translations, and active practice prompts.
 
 ## Who is this for?
 
-**"Vibe coders"** — people who build software by instructing AI coding tools in natural language, without a traditional CS education.
+People with a project they can run but cannot yet explain with confidence.
 
-You've built something (or found something cool on GitHub). It works. But you don't really understand *how* it works under the hood. This skill generates a course that teaches you — not by lecturing, but by tracing what happens when you actually use the app.
+That project may have been assembled quickly from templates, copied examples, tutorials, or AI-assisted iteration. It may be an open-source codebase they want to study. The common problem is the same: the learner does not yet have a durable mental model of the system.
 
-**Your goals are practical, not academic:**
-- Steer AI coding tools better (make smarter architectural decisions)
-- Detect when AI is wrong (spot hallucinations, catch bad patterns)
-- Debug when AI gets stuck (break out of bug loops)
-- Talk to engineers without feeling lost
+The course is built for learners who want to:
 
-You're not trying to become a software engineer. You want coding as a superpower.
+- Understand how the major parts of the project fit together
+- Trace requests, state changes, and data flow without guessing
+- Build real vocabulary they can use when reading and discussing code
+- Debug by forming hypotheses and checking them against the source
+- Make deliberate changes by hand and explain why they work
+- Retain what they learn and transfer it to future projects
+
+This skill is not about helping the learner rely on AI more effectively. It is about helping them become more capable on their own.
 
 ## What the course looks like
 
-The output is a **single HTML file** — no dependencies, no setup, works offline. It includes:
+The output is a **directory** that can be opened directly in the browser. It includes shared assets plus per-module HTML files that are assembled into a final `index.html`.
 
 - **Scroll-based modules** with progress tracking and keyboard navigation
-- **Code ↔ Plain English translations** — real code on the left, what it means on the right
-<img width="720" alt="Code translation block" src="https://github.com/user-attachments/assets/fb9e7fac-05c1-4f98-b80c-46543ef81afc" />
-
-- **Animated visualizations** — data flow animations, group chat between components, architecture diagrams
-<img width="720" alt="Animated data flow" src="https://github.com/user-attachments/assets/20fb403e-7dfd-4a47-989b-bbae86ca8041" />
-
-- **Interactive quizzes** that test *application* not memorization ("You want to add favorites — which files change?")
-<img width="720" alt="Interactive quiz" src="https://github.com/user-attachments/assets/57706496-9fa8-457a-8450-3da22789951c" />
-
-- **Glossary tooltips** — hover any technical term for a plain-English definition
-<img width="720" alt="Glossary tooltip" src="https://github.com/user-attachments/assets/ac2f160a-d73f-4779-97b2-a06fdb5f3227" />
-
-  
-- **Warm, distinctive design** — not the typical purple-gradient AI look
+- **Code <-> plain-language translations** using real code from the project
+- **Animated visualizations** such as data flow animations, group chats between components, and architecture diagrams
+- **Interactive quizzes** that test tracing, debugging, and transfer instead of memorization
+- **Prediction checkpoints** that ask the learner to think before the explanation appears
+- **Hands-on practice prompts** that send the learner back to the real files or runtime behavior
+- **Glossary tooltips** so technical terms are explained where they first appear
+- **Warm, distinctive design** instead of generic AI-themed visuals
 
 ## How to use
 
-### As a Claude Code skill
-
-1. Copy the `codebase-to-course` folder into `~/.claude/skills/`
-2. Open any project in Claude Code
-3. Say: *"Turn this codebase into an interactive course"*
+1. Copy the `codebase-to-course` folder into your skills directory.
+2. Open a project.
+3. Ask for a course, for example: "Turn this codebase into an interactive course."
 
 ### Trigger phrases
 
@@ -58,35 +52,20 @@ The output is a **single HTML file** — no dependencies, no setup, works offlin
 
 ### Build first, understand later
 
-This inverts traditional CS education. The old way: memorize concepts for years → eventually build something → finally see the point (most people quit before step 3). This way: **build something → experience it working → now understand how it works.**
+The learner starts from a real project that already does something concrete. That gives every concept a reason to matter.
 
-### Show, don't tell
+### Predict, inspect, explain, test, reflect
 
-Every screen is at least 50% visual. Max 2-3 sentences per text block. If something can be a diagram, animation, or interactive element — it shouldn't be a paragraph.
+The course should repeatedly ask the learner to predict behavior, inspect the real code, explain it in plain language, test the idea against the project, and reflect on what changed in their understanding.
 
-### Quizzes test doing, not knowing
+### Quizzes test transfer, not memorization
 
-No "What does API stand for?" Instead: "A user reports stale data after switching pages. Where would you look first?" Quizzes test whether you can *use* what you learned to solve a new problem.
-
-### No recycled metaphors
-
-Each concept gets a metaphor that fits *that specific idea*. A database is a library with a card catalog. Auth is a bouncer checking IDs. API rate limiting is a nightclub with a capacity limit. Never the same metaphor twice.
+Good questions ask what the learner would do in a new scenario, where they would look for a bug, or how a change would move through the system.
 
 ### Original code only
 
-Code snippets are exact copies from the real codebase — never modified or simplified. The learner should be able to open the actual file and see the same code they learned from.
+Code snippets should be copied exactly from the real project. The learner should be able to open the source and see the same code they studied.
 
-## Skill structure
+## Credits
 
-```
-codebase-to-course/
-├── SKILL.md                          # Main skill instructions
-└── references/
-    ├── design-system.md              # CSS tokens, typography, colors, layout
-    └── interactive-elements.md       # Quiz, animation, and visualization patterns
-```
-
-
----
-
-Built by [Zara](https://x.com/zarazhangrui) with Claude Code.
+This skill is direct modification of the original [codebase-to-course](https://github.com/zarazhangrui/codebase-to-course) skill made by [Zara](https://x.com/zarazhangrui).

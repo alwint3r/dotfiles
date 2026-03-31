@@ -635,7 +635,7 @@ For annotating config files, permissions, or settings:
 
 ## Glossary Tooltips
 
-The most important accessibility feature for non-technical learners. Any technical term in the course text should be wrapped in a tooltip that shows a plain-English definition on hover (desktop) or tap (mobile). The learner never has to leave the page or Google anything.
+One of the most important accessibility features for serious beginners and returning builders. Any technical term in the course text should be wrapped in a tooltip that shows a plain-language definition on hover (desktop) or tap (mobile). The learner never has to leave the page just to decode vocabulary.
 
 **HTML — mark up terms inline:**
 ```html
@@ -916,8 +916,8 @@ For sequences that would otherwise be a numbered paragraph list. Visual, scannab
   <div class="step-card">
     <div class="step-num">3</div>
     <div class="step-body">
-      <strong>AI analyzes the content</strong>
-      <p>The transcript is sent to an AI model that extracts key moments</p>
+      <strong>Analyzer scores the transcript</strong>
+      <p>A processing step extracts key moments from the transcript and ranks them</p>
     </div>
   </div>
 </div>
