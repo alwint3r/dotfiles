@@ -89,6 +89,23 @@ local function prefer_builtin_parser(lang)
 	end
 end
 
+local function prefer_builtin_query(lang, query_group)
+	if vim.fn.has('nvim-0.12') == 0 then
+		return
+	end
+
+	local query_path = ('queries/%s/%s.scm'):format(lang, query_group)
+	for _, path in ipairs(vim.api.nvim_get_runtime_file(query_path, true)) do
+		if not path:match('/nvim%-treesitter/') then
+			local ok, lines = pcall(vim.fn.readfile, path)
+			if ok and lines and #lines > 0 then
+				vim.treesitter.query.set(lang, query_group, table.concat(lines, '\n'))
+				return
+			end
+		end
+	end
+end
+
 local function setup_treesitter()
 	local parsers = {
 		'c',
@@ -118,9 +135,23 @@ local function setup_treesitter()
 	}
 	local parser_install_dir = vim.fn.stdpath('data') .. '/site'
 
-	-- Neovim 0.12 ships a Lua parser that matches its built-in queries.
-	-- Prefer it over an older nvim-treesitter copy to avoid startup errors.
-	prefer_builtin_parser('lua')
+	-- Neovim 0.12 ships parsers for the languages used by hover markdown.
+	-- Prefer them over any older nvim-treesitter copies to avoid
+	-- parser/query mismatches in floating documentation buffers.
+	for _, lang in ipairs({ 'lua', 'markdown', 'markdown_inline', 'vimdoc' }) do
+		prefer_builtin_parser(lang)
+	end
+	for _, query in ipairs({
+		{ 'lua', 'highlights' },
+		{ 'lua', 'injections' },
+		{ 'markdown', 'highlights' },
+		{ 'markdown', 'injections' },
+		{ 'markdown_inline', 'highlights' },
+		{ 'markdown_inline', 'injections' },
+		{ 'vimdoc', 'highlights' },
+	}) do
+		prefer_builtin_query(query[1], query[2])
+	end
 
 	vim.opt.runtimepath:prepend(parser_install_dir)
 
@@ -146,6 +177,16 @@ local function setup_treesitter()
 		vim.api.nvim_create_autocmd('FileType', {
 			group = group,
 			callback = function(args)
+				if vim.bo[args.buf].filetype == 'markdown' and vim.bo[args.buf].buftype ~= '' then
+					-- Hover/help markdown buffers still trigger the incompatible
+					-- nvim-treesitter highlight path on Neovim 0.12. Stop
+					-- treesitter there instead of disabling markdown globally.
+					vim.schedule(function()
+						pcall(vim.treesitter.stop, args.buf)
+					end)
+					return
+				end
+
 				if vim.bo[args.buf].buftype ~= '' or vim.bo[args.buf].filetype == 'markdown' then
 					return
 				end
