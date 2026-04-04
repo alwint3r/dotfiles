@@ -209,7 +209,7 @@ This produces `index.html`. Open it in the browser.
 **Critical rules:**
 - **Never regenerate** `styles.css` or `main.js` - always copy from references
 - Module files contain only `<section>` content - no boilerplate
-- Use CSS `scroll-snap-type: y proximity` (not `mandatory`)
+- Avoid page-level scroll snapping by default; keep normal wheel/touch scrolling and use explicit smooth scrolling only for guided navigation
 - Use `min-height: 100dvh` with `100vh` fallback on `.module`
 - Interactive element JS is in `main.js`; wire up via `data-*` attributes and CSS class names as shown in `references/interactive-elements.md`
 - Chat containers need `id` attributes; flow animations need `data-steps='[...]'` JSON on `.flow-animation`

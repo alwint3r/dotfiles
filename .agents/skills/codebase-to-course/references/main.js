@@ -27,6 +27,7 @@
   const progressBar = $('#progress-bar');
   const navDots     = $$('.nav-dot');
   const modules     = $$('.module');
+  let progressFrame = null;
 
   function updateProgress() {
     if (!progressBar) return;
@@ -57,7 +58,15 @@
     });
   }
 
-  window.addEventListener('scroll', () => requestAnimationFrame(updateProgress), { passive: true });
+  function queueProgressUpdate() {
+    if (progressFrame !== null) return;
+    progressFrame = requestAnimationFrame(() => {
+      progressFrame = null;
+      updateProgress();
+    });
+  }
+
+  window.addEventListener('scroll', queueProgressUpdate, { passive: true });
   updateProgress();
 
   // Nav dot click → scroll to module

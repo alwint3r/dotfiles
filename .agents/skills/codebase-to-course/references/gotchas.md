@@ -40,9 +40,9 @@ A module explains the code but never sends the learner back to the real project 
 
 The course tells the learner to ask AI for an explanation, a fix, or the next step. Do not do that. The course should point them toward the next observation they can make themselves.
 
-### Scroll-Snap Mandatory
+### Scroll-Snap Defaults
 
-Using `scroll-snap-type: y mandatory` traps users inside long modules. Always use `proximity`.
+Even `scroll-snap-type: y proximity` can make wheel and trackpad scrolling feel sticky on long single-page courses. Do not enable page-level scroll snapping by default. Only add it intentionally for short, presentation-style experiences where snapping is a clear benefit.
 
 ### Module Quality Degradation
 
