@@ -8,10 +8,6 @@ return {
 		---@module "ibl"
 		opts = {},
 	},
-	{
-		'nvim-treesitter/nvim-treesitter-textobjects',
-		branch = "main",
-	},
 	{ 'wellle/targets.vim' },
 	{ 'numToStr/Comment.nvim' },
 	{ 'tpope/vim-surround' },

@@ -1,6 +1,6 @@
 # Tree-sitter Setup
 
-This Neovim profile uses Neovim 0.12 built-in tree-sitter APIs and no longer uses the archived `nvim-treesitter` core plugin.
+This Neovim profile uses Neovim 0.12 built-in tree-sitter APIs and has no `nvim-treesitter` ecosystem dependencies.
 
 Non-bundled parsers and query files are installed explicitly with:
 

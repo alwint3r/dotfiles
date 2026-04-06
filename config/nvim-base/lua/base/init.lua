@@ -107,17 +107,6 @@ local function prefer_builtin_query(lang, query_group)
 end
 
 local function setup_treesitter()
-	local textobjects = {
-		select = {
-			lookahead = true,
-			keymaps = {
-				['af'] = '@function.outer',
-				['if'] = '@function.inner',
-				['ac'] = '@class.outer',
-				['ic'] = '@class.inner',
-			},
-		},
-	}
 	-- Install non-bundled parsers and pinned query files with
 	-- `config/nvim-base/bin/install-parsers`.
 	local parser_install_dir = vim.fn.stdpath('data') .. '/site'
@@ -163,11 +152,6 @@ local function setup_treesitter()
 			pcall(vim.treesitter.start, args.buf)
 		end,
 	})
-
-	local ok_textobjects, ts_textobjects = pcall(require, 'nvim-treesitter-textobjects')
-	if ok_textobjects then
-		ts_textobjects.setup(textobjects)
-	end
 end
 
 setup_treesitter()

@@ -7,10 +7,6 @@ return {
 			repo = 'https://github.com/nvim-treesitter/nvim-treesitter.git',
 			revision = '4916d6592ede8c07973490d9322f187e07dfefac',
 		},
-		textobjects = {
-			repo = 'https://github.com/nvim-treesitter/nvim-treesitter-textobjects.git',
-			revision = '93d60a475f0b08a8eceb99255863977d3a25f310',
-		},
 	},
 	parsers = {
 		{
@@ -60,19 +56,6 @@ return {
 			'tsx',
 			'python',
 			'rust',
-			'ecma',
-			'jsx',
-		},
-		textobjects = {
-			'c',
-			'cpp',
-			'cmake',
-			'lua',
-			'python',
-			'rust',
-			'javascript',
-			'typescript',
-			'tsx',
 			'ecma',
 			'jsx',
 		},
