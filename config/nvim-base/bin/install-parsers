@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+export NVIM_APPNAME=nvim-base
+exec nvim --headless -u NONE -l "$SCRIPT_DIR/install-parsers.lua" "$@"

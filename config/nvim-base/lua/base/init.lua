@@ -118,6 +118,8 @@ local function setup_treesitter()
 			},
 		},
 	}
+	-- Install non-bundled parsers and pinned query files with
+	-- `config/nvim-base/bin/install-parsers`.
 	local parser_install_dir = vim.fn.stdpath('data') .. '/site'
 
 	-- Neovim 0.12 ships parsers for the languages used by hover markdown.
