@@ -1,15 +1,3 @@
-local function treesitter_build()
-	if vim.fn.exists(':TSUpdate') > 0 then
-		vim.cmd('TSUpdate')
-		return
-	end
-
-	vim.notify(
-		'Skipping :TSUpdate because the command is unavailable.',
-		vim.log.levels.WARN
-	)
-end
-
 return {
 	{ 'folke/tokyonight.nvim' },
 	{ 'nvim-lualine/lualine.nvim' },
@@ -21,17 +9,8 @@ return {
 		opts = {},
 	},
 	{
-		'nvim-treesitter/nvim-treesitter',
-		branch = "main",
-		lazy = false,
-		build = treesitter_build,
-	},
-	{
 		'nvim-treesitter/nvim-treesitter-textobjects',
 		branch = "main",
-		dependencies = {
-			{ 'nvim-treesitter/nvim-treesitter' },
-		},
 	},
 	{ 'wellle/targets.vim' },
 	{ 'numToStr/Comment.nvim' },

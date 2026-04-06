@@ -107,23 +107,8 @@ local function prefer_builtin_query(lang, query_group)
 end
 
 local function setup_treesitter()
-	local parsers = {
-		'c',
-		'cpp',
-		'cmake',
-		'vim',
-		'vimdoc',
-		'lua',
-		'javascript',
-		'typescript',
-		'tsx',
-		'python',
-		'rust',
-		'markdown',
-	}
 	local textobjects = {
 		select = {
-			enable = true,
 			lookahead = true,
 			keymaps = {
 				['af'] = '@function.outer',
@@ -155,78 +140,32 @@ local function setup_treesitter()
 
 	vim.opt.runtimepath:prepend(parser_install_dir)
 
-	local ok_ts, ts = pcall(require, 'nvim-treesitter')
-	if not ok_ts then
-		return
-	end
+	local group = vim.api.nvim_create_augroup('dotfiles-treesitter-highlight', { clear = true })
+	vim.api.nvim_create_autocmd('FileType', {
+		group = group,
+		callback = function(args)
+			if vim.bo[args.buf].filetype == 'markdown' and vim.bo[args.buf].buftype ~= '' then
+				-- Hover/help markdown buffers can still pick up parser-query
+				-- mismatches. Stop treesitter there instead of disabling
+				-- markdown highlighting globally.
+				vim.schedule(function()
+					pcall(vim.treesitter.stop, args.buf)
+				end)
+				return
+			end
 
-	local is_main_branch = type(ts.install) == 'function'
-	if is_main_branch then
-		ts.setup({
-			install_dir = parser_install_dir,
-		})
+			if vim.bo[args.buf].buftype ~= '' or vim.bo[args.buf].filetype == 'markdown' then
+				return
+			end
 
-		local ok_configs, configs = pcall(require, 'nvim-treesitter.configs')
-		if ok_configs then
-			configs.setup({
-				textobjects = textobjects,
-			})
-		end
-
-		local group = vim.api.nvim_create_augroup('dotfiles-treesitter-highlight', { clear = true })
-		vim.api.nvim_create_autocmd('FileType', {
-			group = group,
-			callback = function(args)
-				if vim.bo[args.buf].filetype == 'markdown' and vim.bo[args.buf].buftype ~= '' then
-					-- Hover/help markdown buffers still trigger the incompatible
-					-- nvim-treesitter highlight path on Neovim 0.12. Stop
-					-- treesitter there instead of disabling markdown globally.
-					vim.schedule(function()
-						pcall(vim.treesitter.stop, args.buf)
-					end)
-					return
-				end
-
-				if vim.bo[args.buf].buftype ~= '' or vim.bo[args.buf].filetype == 'markdown' then
-					return
-				end
-
-				pcall(vim.treesitter.start, args.buf)
-			end,
-		})
-
-		return
-	end
-
-	if vim.fn.has('nvim-0.12') == 1 then
-		if not vim.g.dotfiles_treesitter_master_warned then
-			vim.g.dotfiles_treesitter_master_warned = true
-			vim.schedule(function()
-				vim.notify(
-					'nvim-treesitter master is incompatible with Neovim 0.12. Run :Lazy sync, then restart Neovim.',
-					vim.log.levels.WARN
-				)
-			end)
-		end
-		return
-	end
-
-	local ok_configs, configs = pcall(require, 'nvim-treesitter.configs')
-	if not ok_configs then
-		return
-	end
-
-	configs.setup({
-		highlight = {
-			enable = true,
-		},
-		textobjects = textobjects,
-		ensure_installed = parsers,
-		parser_install_dir = parser_install_dir,
-		modules = {},
-		sync_install = false,
-		ignore_install = {},
+			pcall(vim.treesitter.start, args.buf)
+		end,
 	})
+
+	local ok_textobjects, ts_textobjects = pcall(require, 'nvim-treesitter-textobjects')
+	if ok_textobjects then
+		ts_textobjects.setup(textobjects)
+	end
 end
 
 setup_treesitter()
