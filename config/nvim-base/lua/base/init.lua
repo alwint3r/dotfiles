@@ -54,17 +54,57 @@ vim.opt.termguicolors = true
 local theme = vim.env.NVIM_THEME_LIGHT == '1' and 'tokyonight-day' or 'tokyonight'
 vim.cmd.colorscheme(theme)
 
+local default_guicursor = vim.o.guicursor
+local light_guicursor = table.concat({
+	'n-v-c-sm:block-Cursor',
+	'i-ci-ve:ver25-CursorInsert',
+	'r-cr-o:hor20-Cursor',
+	't:block-blinkon500-blinkoff500-TermCursor',
+}, ',')
+
+local function set_terminal_cursor_color(color)
+	pcall(vim.api.nvim_ui_send, ('\27]12;%s\7'):format(color))
+end
+
+local function reset_terminal_cursor_color()
+	pcall(vim.api.nvim_ui_send, '\27]112\7')
+end
+
+local function apply_light_theme_cursor()
+	if vim.o.background == 'light' then
+		vim.opt.guicursor = light_guicursor
+
+		vim.api.nvim_set_hl(0, 'Cursor', { fg = '#e9e9ec', bg = '#1f2335' })
+		vim.api.nvim_set_hl(0, 'CursorInsert', { fg = '#e9e9ec', bg = '#1f2335' })
+		vim.api.nvim_set_hl(0, 'lCursor', { fg = '#e9e9ec', bg = '#1f2335' })
+		vim.api.nvim_set_hl(0, 'CursorIM', { fg = '#e9e9ec', bg = '#1f2335' })
+
+		set_terminal_cursor_color('#1f2335')
+		return
+	end
+
+	vim.opt.guicursor = default_guicursor
+	reset_terminal_cursor_color()
+end
+
 vim.api.nvim_create_autocmd('ColorScheme', {
 	pattern = '*',
 	callback = function()
-		if vim.o.background == 'light' then
-			vim.api.nvim_set_hl(0, 'Cursor', { reverse = true })
-		end
+		apply_light_theme_cursor()
 	end,
 })
-if vim.o.background == 'light' then
-	vim.api.nvim_set_hl(0, 'Cursor', { reverse = true })
-end
+vim.api.nvim_create_autocmd('OptionSet', {
+	pattern = 'background',
+	callback = function()
+		apply_light_theme_cursor()
+	end,
+})
+vim.api.nvim_create_autocmd('VimLeavePre', {
+	callback = function()
+		reset_terminal_cursor_color()
+	end,
+})
+apply_light_theme_cursor()
 
 require('lualine').setup({
 	options = {
