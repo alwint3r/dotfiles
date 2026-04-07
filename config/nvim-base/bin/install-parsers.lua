@@ -75,22 +75,6 @@ local function sync_repo(repo, revision)
 	return repo_dir
 end
 
-local function install_parser(entry)
-	local repo_dir = sync_repo(entry.repo, entry.revision)
-	local grammar_dir = repo_dir
-	if entry.subdir then
-		grammar_dir = repo_dir .. '/' .. entry.subdir
-	end
-
-	if not path_exists(grammar_dir .. '/grammar.js') and not path_exists(grammar_dir .. '/grammar.json') then
-		fail('Missing grammar definition for ' .. entry.lang .. ' in ' .. grammar_dir)
-	end
-
-	local output = parser_dir .. '/' .. entry.lang .. '.so'
-	info('Building parser ' .. entry.lang)
-	run({ 'tree-sitter', 'build', '-o', output, grammar_dir })
-end
-
 local function copy_dir(src, dst)
 	if not path_exists(src) then
 		fail('Missing directory to copy: ' .. src)
@@ -109,22 +93,54 @@ local function copy_into_dir(src, dst)
 		vim.fn.delete(dst, 'rf')
 	end
 	ensure_dir(dst)
-	run({ 'cp', '-R', src .. '/.', dst })
+	for name, type in vim.fs.dir(src) do
+		local src_file = src .. '/' .. name
+		local dst_file = dst .. '/' .. name
+		if type == 'directory' then
+			copy_into_dir(src_file, dst_file)
+		elseif not path_exists(dst_file) then
+			run({ 'cp', src_file, dst_file })
+		end
+	end
+end
+
+local function install_parser(entry)
+	local repo_dir = sync_repo(entry.repo, entry.revision)
+	local grammar_dir = repo_dir
+	if entry.subdir then
+		grammar_dir = repo_dir .. '/' .. entry.subdir
+	end
+
+	if not path_exists(grammar_dir .. '/grammar.js') and not path_exists(grammar_dir .. '/grammar.json') then
+		fail('Missing grammar definition for ' .. entry.lang .. ' in ' .. grammar_dir)
+	end
+
+	local output = parser_dir .. '/' .. entry.lang .. '.so'
+	info('Building parser ' .. entry.lang)
+	run({ 'tree-sitter', 'build', '-o', output, grammar_dir })
+
+	local grammar_queries = grammar_dir .. '/queries'
+	if path_exists(grammar_queries) then
+		local dst = query_dir .. '/' .. entry.lang
+		info('Installing grammar queries for ' .. entry.lang)
+		copy_dir(grammar_queries, dst)
+	end
 end
 
 local function install_queries(source_name, langs)
 	local source = manifest.query_sources[source_name]
+	if not source then
+		return
+	end
 	local repo_dir = sync_repo(source.repo, source.revision)
 	for _, lang in ipairs(langs) do
 		local src = repo_dir .. '/runtime/queries/' .. lang
 		if not path_exists(src) then
 			src = repo_dir .. '/queries/' .. lang
 		end
-		local dst = query_dir .. '/' .. lang
-		info(('Installing %s queries for %s'):format(source_name, lang))
-		if source_name == 'core' then
-			copy_dir(src, dst)
-		else
+		if path_exists(src) then
+			local dst = query_dir .. '/' .. lang
+			info(('Installing %s queries for %s'):format(source_name, lang))
 			copy_into_dir(src, dst)
 		end
 	end

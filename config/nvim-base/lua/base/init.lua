@@ -51,11 +51,25 @@ require("lazy").setup({
 })
 
 vim.opt.termguicolors = true
-vim.cmd.colorscheme('tokyonight')
+local theme = vim.env.NVIM_THEME_LIGHT == '1' and 'tokyonight-day' or 'tokyonight'
+vim.cmd.colorscheme(theme)
+
+vim.api.nvim_create_autocmd('ColorScheme', {
+	pattern = '*',
+	callback = function()
+		if vim.o.background == 'light' then
+			vim.api.nvim_set_hl(0, 'Cursor', { reverse = true })
+		end
+	end,
+})
+if vim.o.background == 'light' then
+	vim.api.nvim_set_hl(0, 'Cursor', { reverse = true })
+end
 
 require('lualine').setup({
 	options = {
 		icons_enabled = true,
+		theme = theme,
 	}
 })
 
