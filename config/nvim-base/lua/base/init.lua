@@ -160,6 +160,24 @@ local function prefer_builtin_query(lang, query_group)
 	end
 end
 
+local function prefer_pinned_query(lang, query_group, source)
+	if vim.fn.has('nvim-0.12') == 0 then
+		return
+	end
+
+	local path = ('%s/treesitter-src/%s/runtime/queries/%s/%s.scm')
+		:format(vim.fn.stdpath('data'), source, lang, query_group)
+
+	if vim.uv.fs_stat(path) == nil then
+		return
+	end
+
+	local ok, lines = pcall(vim.fn.readfile, path)
+	if ok and lines and #lines > 0 then
+		vim.treesitter.query.set(lang, query_group, table.concat(lines, '\n'))
+	end
+end
+
 local function setup_treesitter()
 	-- Install non-bundled parsers and pinned query files with
 	-- `config/nvim-base/bin/install-parsers`.
@@ -182,6 +200,10 @@ local function setup_treesitter()
 	}) do
 		prefer_builtin_query(query[1], query[2])
 	end
+
+	-- The upstream tree-sitter-cpp grammar ships intentionally small
+	-- highlights. Use the pinned nvim-treesitter query for richer C++ colors.
+	prefer_pinned_query('cpp', 'highlights', 'nvim-treesitter')
 
 	vim.opt.runtimepath:prepend(parser_install_dir)
 
