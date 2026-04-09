@@ -28,11 +28,11 @@ People stop paying attention when a course turns into a wall of paragraphs. The 
 
 ### Code <-> Plain-Language Translations
 
-Every code snippet gets a side-by-side plain-language translation. Left panel: real code from the project with syntax highlighting. Right panel: line-by-line plain-language explanation of what each line does. This is one of the most valuable teaching tools for learners building software intuition.
+Every code snippet gets a side-by-side plain-language translation. Left panel: source code (real code when available, illustrative code when prompt-only) with syntax highlighting. Right panel: line-by-line plain-language explanation of what each line does. This is one of the most valuable teaching tools for learners building software intuition.
 
 **Critical: No horizontal scrollbars on code.** All code must use `white-space: pre-wrap` so it wraps instead of scrolling. This is a course for learning, not an IDE. Readability beats preserving indentation shape.
 
-**Critical: Use original code exactly as-is.** Never modify, simplify, or trim code snippets from the codebase. The learner should be able to open the real file and see the exact same code they learned from. Instead of editing code to make it shorter, choose naturally short snippets (5-10 lines) that already illustrate the concept well.
+**Critical: Preserve source fidelity.** If the course is codebase-backed, use original code exactly as-is. Never modify, simplify, or trim snippets from the repository. If the course is prompt-only, label snippets as illustrative and keep them consistent with the stated architecture and constraints.
 
 ### One Concept Per Screen
 
@@ -46,19 +46,64 @@ Introduce every new concept with a metaphor from everyday life. Then ground it i
 
 ### Learn by Tracing Real Behavior
 
-Follow what actually happens when the learner does something meaningful in the project. Trace the flow end-to-end. Start from a concrete action they can imagine or reproduce, then show the journey through the system.
+Follow what actually happens when the learner does something meaningful in the source material. Trace the flow end-to-end. Start from a concrete action they can imagine or reproduce, then show the journey through the system.
+
+### Desirable Difficulty Over Smooth Reading
+
+Learning should feel effortful in a productive way. Avoid "explain first, quiz later" sequencing.
+
+- Ask the learner to commit to a prediction before any explanation.
+- Require an explicit attempt before showing full solutions.
+- Use incorrect-but-plausible distractors and explain why they are tempting.
+- Keep friction on reasoning tasks, not on UI mechanics.
+- Treat temporary struggle as a design goal when it leads to better transfer.
+
+**Profile constraints:**
+- **Strict profile:** no passive explanation longer than about 90 seconds without an action.
+- **Balanced profile:** no passive explanation longer than about 2-3 minutes without an action.
 
 ### Use a Metacognitive Loop
 
 Each module should repeatedly move through this loop:
 
 1. **Predict** what will happen before the answer is revealed.
-2. **Inspect** the code, file, UI event, command, or runtime signal that settles the question.
-3. **Explain** the idea in plain language.
-4. **Practice** by sending the learner to a real file, function, or behavior to inspect or modify.
-5. **Reflect** by asking what changed in the learner's understanding or where the same pattern appears again.
+2. **Attempt** the task (trace, debug, decide, or edit) before seeing the full answer.
+3. **Inspect** the code, file, UI event, command, or runtime signal that settles the question.
+4. **Feedback** on correctness plus why wrong paths were tempting.
+5. **Explain** the idea in plain language.
+6. **Transfer** by applying the same concept in a new context.
+7. **Reflect** by asking what changed in the learner's understanding or where the same pattern appears again.
 
 The explanation should not arrive too early. If the learner has not had a chance to think first, the course becomes passive consumption.
+
+### Progressive Hints and Solution Gates
+
+For major exercises, include a 3-step hint ladder and a gated solution reveal:
+
+1. **Hint 1 (conceptual):** what principle to think about.
+2. **Hint 2 (structural):** where to look (file/function/path).
+3. **Hint 3 (near-solution):** partial scaffold without giving the final answer.
+
+Full solutions should be hidden by default and revealed only after an explicit attempt declaration.
+
+### Confidence Calibration
+
+Use confidence checks to reduce false confidence:
+
+- Ask for confidence **before** a major task.
+- Ask again **after** feedback.
+- Prompt one sentence: "What changed between your expectation and outcome?"
+
+This metacognitive step is part of the learning objective, not optional garnish.
+
+### Delayed Retrieval and Interleaving
+
+Re-activate earlier concepts later in the course.
+
+- **Strict profile:** at least 2 delayed retrieval prompts per module from prior modules.
+- **Balanced profile:** at least 1 delayed retrieval prompt per module from prior modules.
+
+Do not cluster all retrieval at the end. Space it across modules so recall happens after forgetting has started.
 
 ### Make It Memorable
 
@@ -90,7 +135,7 @@ Quizzes should test whether the learner can use what they learned to solve a new
 2. **Debugging scenarios** - "A user reports X is broken. Where would you look first, and why?"
 3. **Tracing exercises** - "When a user does X, trace the path the data takes"
 4. **Architecture decisions** - "You need to add Y. Which part of the system should own it?"
-5. **Transfer prompts** - "Where else in this codebase does the same pattern show up?"
+5. **Transfer prompts** - "Where else in this system does the same pattern show up?"
 
 **What NOT to quiz:**
 - Definitions ("What does API stand for?")
@@ -106,7 +151,9 @@ Quizzes should test whether the learner can use what they learned to solve a new
 
 **How many quizzes:** One per module, placed after the module's core content. Use 3-5 questions. Each question should make the learner pause and think.
 
-**Deciding what concepts are worth quizzing:** If a concept will help the learner inspect real code, debug a problem, plan a change, or transfer a pattern to another part of the project, it is worth quizzing. If not, it probably belongs in a tooltip or a short explanation instead.
+**Question quality bar:** At least one question per module must require a multi-step reasoning chain (for example, trace + boundary check + design decision), not a single lookup.
+
+**Deciding what concepts are worth quizzing:** If a concept will help the learner inspect source artifacts, debug a problem, plan a change, or transfer a pattern to another part of the system, it is worth quizzing. If not, it probably belongs in a tooltip or a short explanation instead.
 
 ### Do Not Add AI Escape Hatches
 

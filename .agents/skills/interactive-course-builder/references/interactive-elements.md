@@ -22,6 +22,9 @@ Implementation patterns for every interactive element type used in courses. Pick
 15. [Visual File Tree](#visual-file-tree)
 16. [Icon-Label Rows](#icon-label-rows)
 17. [Numbered Step Cards](#numbered-step-cards)
+18. [Attempt Gate + Hint Ladder](#attempt-gate--hint-ladder)
+19. [Confidence Checkpoint](#confidence-checkpoint)
+20. [Effort Rubric Board](#effort-rubric-board)
 
 ---
 
@@ -943,3 +946,135 @@ For sequences that would otherwise be a numbered paragraph list. Visual, scannab
 }
 .step-body p { margin: var(--space-1) 0 0; color: var(--color-text-secondary); font-size: var(--text-sm); }
 ```
+
+---
+
+## Attempt Gate + Hint Ladder
+
+Use this for major exercises where the learner should struggle productively before seeing the answer.
+
+```html
+<div class="attempt-gate">
+  <div class="attempt-header">
+    <span class="attempt-kicker">Try First</span>
+    <h3>Trace what happens after `npm run build` starts</h3>
+    <p>Write your hypothesis before opening hints.</p>
+  </div>
+
+  <label class="attempt-checkbox">
+    <input type="checkbox">
+    <span>I made an honest attempt (notes, trace, or hypothesis).</span>
+  </label>
+
+  <div class="hint-ladder">
+    <details class="hint-step">
+      <summary>Hint 1 - Conceptual</summary>
+      <p>Think about where command routing starts, not where output ends.</p>
+    </details>
+    <details class="hint-step">
+      <summary>Hint 2 - Structural</summary>
+      <p>Open the script entry in <code>package.json</code>, then follow the invoked file.</p>
+    </details>
+    <details class="hint-step">
+      <summary>Hint 3 - Near Solution</summary>
+      <p>The path runs: npm script -> tool CLI wrapper -> project config loader.</p>
+    </details>
+  </div>
+
+  <details class="solution-gate">
+    <summary>Reveal solution after attempt</summary>
+    <div class="solution-body">
+      <p>The command resolves through the build script in <code>package.json</code>, then enters...</p>
+    </div>
+  </details>
+</div>
+```
+
+**Rules:**
+- Use for major tasks only (trace, debug, design choice, or change planning).
+- Keep hint order strict: conceptual -> structural -> near-solution.
+- Solution remains collapsed by default.
+
+---
+
+## Confidence Checkpoint
+
+Place before and after major tasks to calibrate confidence against outcomes.
+
+```html
+<div class="confidence-check">
+  <h3>Confidence Checkpoint</h3>
+  <p>Rate your confidence from 1 (guessing) to 5 (certain).</p>
+
+  <div class="confidence-grid">
+    <fieldset class="confidence-phase">
+      <legend>Before attempt</legend>
+      <label><input type="radio" name="conf-before-m3" value="1">1</label>
+      <label><input type="radio" name="conf-before-m3" value="2">2</label>
+      <label><input type="radio" name="conf-before-m3" value="3">3</label>
+      <label><input type="radio" name="conf-before-m3" value="4">4</label>
+      <label><input type="radio" name="conf-before-m3" value="5">5</label>
+    </fieldset>
+
+    <fieldset class="confidence-phase">
+      <legend>After feedback</legend>
+      <label><input type="radio" name="conf-after-m3" value="1">1</label>
+      <label><input type="radio" name="conf-after-m3" value="2">2</label>
+      <label><input type="radio" name="conf-after-m3" value="3">3</label>
+      <label><input type="radio" name="conf-after-m3" value="4">4</label>
+      <label><input type="radio" name="conf-after-m3" value="5">5</label>
+    </fieldset>
+  </div>
+
+  <label class="confidence-note">
+    <span>What changed in your mental model?</span>
+    <textarea rows="3" placeholder="One concrete update to your reasoning"></textarea>
+  </label>
+</div>
+```
+
+**Rules:**
+- Use at least once per module (balanced) and before/after major tasks (strict).
+- Always include a "what changed" reflection prompt.
+
+---
+
+## Effort Rubric Board
+
+Use near module endings or the capstone to make quality criteria explicit.
+
+```html
+<div class="rubric-board">
+  <h3>How to Score Your Attempt</h3>
+  <div class="rubric-items">
+    <div class="rubric-item">
+      <strong>Retrieval</strong>
+      <p>Can you recall key flow without scrolling back?</p>
+    </div>
+    <div class="rubric-item">
+      <strong>Tracing</strong>
+      <p>Can you follow execution across files without hand-waving?</p>
+    </div>
+    <div class="rubric-item">
+      <strong>Debugging</strong>
+      <p>Do your hypotheses map to observable checks?</p>
+    </div>
+    <div class="rubric-item">
+      <strong>Transfer</strong>
+      <p>Can you apply the same pattern in a new module or feature?</p>
+    </div>
+    <div class="rubric-item">
+      <strong>Teach Back</strong>
+      <p>Could you explain this clearly to a teammate?</p>
+    </div>
+    <div class="rubric-item">
+      <strong>Confidence Calibration</strong>
+      <p>Did confidence align with performance after feedback?</p>
+    </div>
+  </div>
+</div>
+```
+
+**Rules:**
+- Keep rubric criteria concrete and observable.
+- Use the same rubric categories across modules so progress is comparable.

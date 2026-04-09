@@ -1,5 +1,5 @@
 /**
- * CODEBASE-TO-COURSE — COMPLETE JS ENGINE
+ * INTERACTIVE-COURSE-BUILDER — COMPLETE JS ENGINE
  * Copy this file verbatim into the course output directory.
  * Never regenerate it. It handles all interactivity generically.
  *

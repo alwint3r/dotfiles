@@ -1,5 +1,5 @@
 /* =============================================================
-   CODEBASE-TO-COURSE — COMPLETE DESIGN SYSTEM
+   INTERACTIVE-COURSE-BUILDER — COMPLETE DESIGN SYSTEM
    Copy this file verbatim into the course output directory.
    Never regenerate it — customize only via :root overrides
    in _base.html (accent color only).
@@ -1128,6 +1128,187 @@ p:last-child { margin-bottom: 0; }
 .step-body strong { display: block; font-weight: 600; margin-bottom: var(--space-1); }
 .step-body p { margin: 0; color: var(--color-text-secondary); font-size: var(--text-sm); }
 
+/* ── ATTEMPT GATE + HINT LADDER ─────────────────────────────── */
+.attempt-gate {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  margin: var(--space-8) 0;
+}
+.attempt-header h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-2);
+}
+.attempt-header p {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+}
+.attempt-kicker {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-accent);
+  margin-bottom: var(--space-2);
+}
+.attempt-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-warm);
+  margin-bottom: var(--space-4);
+  font-size: var(--text-sm);
+}
+.attempt-checkbox input { accent-color: var(--color-accent); }
+.hint-ladder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.hint-step {
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-warm);
+  overflow: hidden;
+}
+.hint-step > summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  padding: var(--space-3) var(--space-4);
+}
+.hint-step > p {
+  margin: 0;
+  padding: 0 var(--space-4) var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+.solution-gate {
+  border: 1px solid var(--color-accent-muted);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-light);
+}
+.solution-gate > summary {
+  cursor: pointer;
+  font-weight: 700;
+  padding: var(--space-3) var(--space-4);
+}
+.solution-body {
+  padding: 0 var(--space-4) var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+/* ── CONFIDENCE CHECKPOINT ───────────────────────────────────── */
+.confidence-check {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-6);
+  margin: var(--space-8) 0;
+}
+.confidence-check h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-2);
+}
+.confidence-check > p {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+}
+.confidence-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.confidence-phase {
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.confidence-phase legend {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+}
+.confidence-phase label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+}
+.confidence-phase input { accent-color: var(--color-accent); }
+.confidence-note {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.confidence-note span {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.confidence-note textarea {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  background: var(--color-bg-warm);
+}
+
+/* ── EFFORT RUBRIC BOARD ─────────────────────────────────────── */
+.rubric-board {
+  margin: var(--space-8) 0;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+.rubric-board h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-4);
+}
+.rubric-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--space-3);
+}
+.rubric-item {
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-light);
+  background: var(--color-surface-warm);
+}
+.rubric-item strong {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-size: var(--text-sm);
+}
+.rubric-item p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
 /* ── SHARED BUTTON STYLE ────────────────────────────────────── */
 .btn {
   padding: var(--space-2) var(--space-5);
@@ -1159,6 +1340,7 @@ p:last-child { margin-bottom: 0; }
   .translation-block { grid-template-columns: 1fr; }
   .translation-english { border-left: none; border-top: 3px solid var(--color-accent); }
   .pattern-cards { grid-template-columns: 1fr 1fr; }
+  .confidence-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 480px) {
