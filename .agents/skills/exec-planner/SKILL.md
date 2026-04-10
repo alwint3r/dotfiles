@@ -103,10 +103,11 @@ Apply these rules whenever external `PLANS.md` cannot be loaded. Even when `PLAN
 12. Prefer idempotent, additive, and safe steps. Include retry or rollback guidance for risky actions.
 13. If the plan is provided inline in chat, emit one fenced `md` block and do not nest triple-backtick fences inside it. If the plan is written directly to a `.md` file whose entire content is the plan, omit outer triple backticks.
 14. When revising the plan, propagate updates across all sections and append a short change note at the bottom describing what changed and why.
-15. During implementation from an ExecPlan, do not ask the user for next steps; proceed to the next milestone autonomously.
-16. Perform only minimal working-tree reconnaissance before the first draft; deeper research belongs after the initial ExecPlan exists.
-17. If write permission is unavailable, produce the full skeleton inline with explicit unknowns instead of delaying for more research.
-18. If write permission is available, persist the initial ExecPlan before any implementation edits.
+15. Treat change notes as append-only history: never edit, reorder, or delete prior change-note entries once written.
+16. During implementation from an ExecPlan, do not ask the user for next steps; proceed to the next milestone autonomously.
+17. Perform only minimal working-tree reconnaissance before the first draft; deeper research belongs after the initial ExecPlan exists.
+18. If write permission is unavailable, produce the full skeleton inline with explicit unknowns instead of delaying for more research.
+19. If write permission is available, persist the initial ExecPlan before any implementation edits.
 
 ## Formatting Rules
 
@@ -140,3 +141,4 @@ Before finishing, verify:
 - commands and acceptance checks are concrete
 - file paths are explicit and repository-relative
 - if write permission was available, the plan was saved to `.agent/execplans/` with a unique name before implementation edits
+- change notes are append-only; new entries were added without modifying or removing prior entries
