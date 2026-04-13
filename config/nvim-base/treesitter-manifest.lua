@@ -54,7 +54,6 @@ return {
 			'javascript',
 			'typescript',
 			'tsx',
-			'python',
 			'rust',
 			'ecma',
 			'jsx',
