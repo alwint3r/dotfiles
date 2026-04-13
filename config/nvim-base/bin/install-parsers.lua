@@ -84,10 +84,11 @@ local function copy_dir(src, dst)
 	run({ 'cp', '-R', src, dst })
 end
 
-local function copy_into_dir(src, dst)
+local function copy_into_dir(src, dst, opts)
 	if not path_exists(src) then
 		fail('Missing directory to copy: ' .. src)
 	end
+	opts = opts or {}
 	local dst_type = path_type(dst)
 	if dst_type and dst_type ~= 'directory' then
 		vim.fn.delete(dst, 'rf')
@@ -97,8 +98,8 @@ local function copy_into_dir(src, dst)
 		local src_file = src .. '/' .. name
 		local dst_file = dst .. '/' .. name
 		if type == 'directory' then
-			copy_into_dir(src_file, dst_file)
-		elseif not path_exists(dst_file) then
+			copy_into_dir(src_file, dst_file, opts)
+		elseif opts.overwrite or not path_exists(dst_file) then
 			run({ 'cp', src_file, dst_file })
 		end
 	end
@@ -141,7 +142,7 @@ local function install_queries(source_name, langs)
 		if path_exists(src) then
 			local dst = query_dir .. '/' .. lang
 			info(('Installing %s queries for %s'):format(source_name, lang))
-			copy_into_dir(src, dst)
+			copy_into_dir(src, dst, { overwrite = true })
 		end
 	end
 end
