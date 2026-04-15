@@ -386,6 +386,21 @@ vim.lsp.config('sqruff', {
 
 vim.lsp.enable('sqruff')
 
+vim.filetype.add({
+	extension = {
+		wat = "wat",
+		wast = "wat",
+	},
+})
+
+vim.lsp.config("wat_lsp", {
+	cmd = { "wat-lsp-rust" },
+	filetypes = { "wat" },
+	root_markers = { ".git" },
+})
+
+vim.lsp.enable("wat_lsp")
+
 -- Copilot & Copilot Chat
 vim.g.copilot_enabled = 0
 vim.g.copilot_no_tab_map = true
