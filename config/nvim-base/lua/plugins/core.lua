@@ -26,7 +26,6 @@ return {
 	{ 'tpope/vim-repeat' },
 	{ 'editorconfig/editorconfig-vim' },
 	{ 'moll/vim-bbye' },
-	{ 'github/copilot.vim' },
 	-- {'folke/neoconf.nvim'},
 	-- {'folke/neodev.nvim'},
 	{ 'neovim/nvim-lspconfig' },
@@ -37,19 +36,6 @@ return {
 	{ 'L3MON4D3/LuaSnip',             build = 'make install_jsregexp' },
 	{ 'saadparwaiz1/cmp_luasnip' },
 	{ 'rafamadriz/friendly-snippets' },
-	{ 'CopilotC-Nvim/CopilotChat.nvim',
-		branch = 'main',
-		dependencies = {
-			{ 'nvim-lua/plenary.nvim' },
-		},
-		build = 'make tiktoken',
-		opts = {
-			model = 'gpt-5',
-			window = {
-				layout = 'vertical'
-			}
-		},
-	},
 	{ 'isak102/telescope-git-file-history.nvim' },
 	{ 'aaronhallaert/advanced-git-search.nvim' },
 	{ 'tpope/vim-rhubarb' },

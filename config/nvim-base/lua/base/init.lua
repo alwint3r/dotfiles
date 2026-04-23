@@ -239,6 +239,7 @@ require('nvim-tree').setup({
 
 vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeToggle<cr>')
 vim.keymap.set('n', '<leader>ntf', '<cmd>NvimTreeFocus<cr>')
+vim.keymap.set('n', '<leader>G', '<cmd>G<cr>')
 
 local gfh_actions = require('telescope').extensions.git_file_history.actions
 
@@ -433,9 +434,3 @@ vim.lsp.config("wat_lsp", {
 })
 
 vim.lsp.enable("wat_lsp")
-
--- Copilot & Copilot Chat
-vim.g.copilot_enabled = 0
-vim.g.copilot_no_tab_map = true
-vim.g.copilot_filetypes = { ["*"] = false }
-vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, silent = true, replace_keycodes = false })
