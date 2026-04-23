@@ -32,7 +32,7 @@ Every code snippet gets a side-by-side plain-language translation. Left panel: s
 
 **Critical: No horizontal scrollbars on code.** All code must use `white-space: pre-wrap` so it wraps instead of scrolling. This is a course for learning, not an IDE. Readability beats preserving indentation shape.
 
-**Critical: Preserve source fidelity.** If the course is codebase-backed, use original code exactly as-is. Never modify, simplify, or trim snippets from the repository. If the course is prompt-only, label snippets as illustrative and keep them consistent with the stated architecture and constraints.
+**Critical: Preserve source fidelity.** If the course is codebase-backed, use original code exactly as-is. Never modify, simplify, or trim snippets from the repository. If the course is prompt-only, label snippets as illustrative and keep them consistent with the stated architecture and constraints. If the source is a web article, every quiz question and explanation must be grounded in explicit article evidence.
 
 ### One Concept Per Screen
 
@@ -154,6 +154,17 @@ Quizzes should test whether the learner can use what they learned to solve a new
 **Question quality bar:** At least one question per module must require a multi-step reasoning chain (for example, trace + boundary check + design decision), not a single lookup.
 
 **Deciding what concepts are worth quizzing:** If a concept will help the learner inspect source artifacts, debug a problem, plan a change, or transfer a pattern to another part of the system, it is worth quizzing. If not, it probably belongs in a tooltip or a short explanation instead.
+
+### Article-Grounded Quiz Rules (web page source)
+
+When the source is a provided web page article, quiz generation must follow strict grounding:
+
+- Build an evidence list first (section heading/paragraph anchor + quote fragment).
+- Every quiz question must map to one evidence item.
+- Do not ask about facts not explicitly stated or strongly implied in the article.
+- Wrong-answer explanations must reference why the option conflicts with article evidence.
+- If a question cannot be justified by article evidence, remove it.
+- Spread questions across major article sections so the quiz checks full-content understanding.
 
 ### Do Not Add AI Escape Hatches
 

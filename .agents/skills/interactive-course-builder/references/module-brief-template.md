@@ -31,6 +31,7 @@
 Include the source snippets the module will use in code <-> plain-language translation blocks.
 - If codebase-backed: copy-paste real code with file path and line numbers.
 - If prompt-only: provide concise illustrative snippets and label them `Illustrative (not from repo)`.
+- If article-backed: provide short article excerpts with section/paragraph anchors for evidence-grounded quiz writing.
 The writing worker will use these verbatim and will not re-read full source inputs.
 
 File: src/example/file.ts (lines 12-24)
@@ -39,12 +40,23 @@ File: src/example/file.ts (lines 12-24)
 File: src/another/file.ts (lines 45-52)
 [paste actual code here]
 
+Article: https://example.com/article (section "How the cache works", paragraph 3)
+[paste short quote fragment here]
+
+### Article Evidence Map (required for article-grounded quiz mode)
+
+List one row per planned question so grounding can be verified.
+
+| Question ID | Article anchor | Evidence quote fragment | What the question checks |
+|---|---|---|---|
+| Q1 | [section/paragraph] | "[short quote]" | [understanding target] |
+
 ### Interactive Elements
 
 Check which elements this module needs. Include enough detail for the writing worker to build them.
 
 - [ ] **Code <-> plain-language translation** - which snippet(s) from above
-- [ ] **Quiz** - [number] questions, style: [scenario / debugging / architecture / tracing / transfer]. Brief description of each question's angle.
+- [ ] **Quiz** - [number] questions, style: [scenario / debugging / architecture / tracing / transfer]. Brief description of each question's angle. If article-backed, include source anchor for each question.
 - [ ] **Group chat animation** - actors: [list]. Message flow summary: [who says what to whom, in what order]
 - [ ] **Data flow animation** - actors: [list]. Steps: [sequence of highlights and packet movements]
 - [ ] **Drag-and-drop** - items: [list], targets: [list]

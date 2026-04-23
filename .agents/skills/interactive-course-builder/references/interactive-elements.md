@@ -122,6 +122,11 @@ For testing understanding with instant feedback. Each question has options, one 
 
 **Wiring:** `main.js` exposes `window.selectOption(btn)`, `window.checkQuiz(containerId)`, and `window.resetQuiz(containerId)`. Call them via `onclick`. Per-question explanations go in `data-explanation-right` and `data-explanation-wrong` on the `.quiz-question-block`.
 
+**Article-grounded mode (required when source is a web article):**
+- Every `.quiz-question-block` must include a `data-source-ref` note (for example, section heading or paragraph id).
+- Question stems, correct answers, and wrong-answer explanations must be answerable from article evidence only.
+- If evidence is missing, drop the question instead of filling with outside knowledge.
+
 **HTML:**
 ```html
 <div class="quiz-container" id="quiz-module3">
@@ -514,6 +519,8 @@ Same HTML/CSS/JS pattern as Multiple-Choice Quizzes, but with longer scenario de
   <!-- quiz-options here -->
 </div>
 ```
+
+In article-grounded mode, scenario setups must be constrained to situations explicitly described in the article. Do not invent external context that the learner cannot verify from the source page.
 
 ---
 

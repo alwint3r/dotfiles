@@ -32,6 +32,10 @@ Trimming, simplifying, or "cleaning up" code snippets when the course is codebas
 
 Asking "What does API stand for?" or "Which file handles X?" Those test memory, not understanding. Every quiz question should present a new scenario and ask the learner to apply what they learned.
 
+### Quiz Questions Not Grounded In The Article
+
+In web-article quiz mode, questions must be answerable from the provided article alone. A common failure is injecting outside facts or assumptions. Every question should have an explicit article anchor and evidence quote. If it does not, remove it.
+
 ### No Manual Practice
 
 A module explains ideas but never sends the learner back to concrete artifacts to inspect a file, trace a value, compare a runtime behavior, examine a design constraint, or make a safe small change. The course should train action, not just recognition.

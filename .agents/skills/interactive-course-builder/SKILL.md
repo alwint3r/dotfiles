@@ -1,27 +1,28 @@
 ---
 name: interactive-course-builder
-description: "Create a beautiful, interactive single-page HTML course from either a real codebase or a prompt-only course brief. Use this skill whenever someone wants an interactive tutorial, course, or educational walkthrough that emphasizes active practice, tracing, and metacognitive learning."
+description: "Create a beautiful, interactive single-page HTML course from a codebase, prompt brief, or web article. Also supports article-grounded quiz-only assessments when a user wants to check understanding from a provided webpage."
 ---
 
 # Interactive Course Builder
 
-Transform source material into a stunning, interactive course. The source can be a real codebase, an existing project spec, or a prompt-only brief. The output is a **directory** containing a pre-built `styles.css`, `main.js`, per-module HTML files, and an assembled `index.html`. Open it directly in the browser with no setup required other than the Google Fonts CDN already referenced by the shell.
+Transform source material into a stunning, interactive course. The source can be a real codebase, an existing project spec, a prompt-only brief, or a web page article. The output is a **directory** containing a pre-built `styles.css`, `main.js`, per-module HTML files, and an assembled `index.html`. Open it directly in the browser with no setup required other than the Google Fonts CDN already referenced by the shell.
 
 ## First-Run Welcome
 
 When the skill is first triggered and the user has not specified source material yet, introduce yourself and explain what you do:
 
-> **I can build an interactive course from either real code or a prompt-only brief, so you can learn by doing instead of passively reading.**
+> **I can build an interactive course from real code, a prompt-only brief, or a web article, so you can learn by doing instead of passively reading.**
 >
 > Give me one of these inputs:
 > - **A local folder** - for example, "turn ./my-project into a course"
 > - **A GitHub link** - for example, "make a course from https://github.com/user/repo"
 > - **The current project** - if you are already inside a codebase, say "turn this into a course"
 > - **A prompt brief only** - for example, "create a course about building a realtime chat backend from scratch"
+> - **A web page article URL** - for example, "create a quiz from https://example.com/article and test my understanding"
 >
 > I will analyze the input, map concepts and flows, and generate a browser-based course with diagrams, walkthroughs, quizzes, prediction checkpoints, and practice drills. The goal is not passive explanation. The goal is to help you build real understanding.
 
-If the user provides a GitHub link, clone the repo first (`git clone <url> /tmp/<repo-name>`) before starting the analysis. If they say "this codebase" or similar, use the current working directory. If they provide prompt-only input, do not block waiting for a repository; proceed using the prompt as the source of truth.
+If the user provides a GitHub link, clone the repo first (`git clone <url> /tmp/<repo-name>`) before starting the analysis. If they say "this codebase" or similar, use the current working directory. If they provide prompt-only input, do not block waiting for a repository; proceed using the prompt as the source of truth. If they provide a web article URL, fetch and read the article first, then build from that article as the sole source of truth.
 
 ## Who This Is For
 
@@ -80,6 +81,25 @@ Do not ask for profile selection unless the user explicitly asks to choose. Infe
 
 ---
 
+## Article Quiz-Only Mode (Web Source)
+
+Use this mode when the user provides a web page article and asks for a quiz-only assessment (for example: "create a quiz from this article," "test my understanding," or "assessment only").
+
+**Behavior:**
+- Produce a quiz-focused course artifact (typically 1 module) optimized for understanding checks rather than full architecture walkthrough.
+- Generate 5-12 questions total (strict: 8-12, balanced: 5-8), using scenario, tracing, inference, and transfer prompts grounded in the article.
+- Include confidence-before and confidence-after checkpoints and a brief reflection prompt.
+
+**Grounding requirements (mandatory):**
+- Every question must be answerable from explicit article content. No outside facts, prior world knowledge, or unstated assumptions.
+- Each question must have an evidence anchor captured during analysis (section heading or paragraph reference plus a short quote fragment).
+- Wrong options must be plausible from the article context, but still clearly contradicted by article evidence.
+- If a concept is not stated or strongly implied by the article, do not ask about it.
+- Explanations must point back to article evidence, not to general background knowledge.
+
+**Coverage rule:**
+- Distribute questions across the article's major sections. Avoid clustering all questions in one part of the article.
+
 ## The Process
 
 ### Phase 1: Source Analysis
@@ -90,6 +110,8 @@ If the source is a codebase, read key files, trace execution paths, identify the
 
 If the source is prompt-only, extract the core system shape from the prompt: actors, flows, boundaries, key decisions, failure modes, and implementation milestones. Where code snippets are useful, create concise illustrative snippets and explicitly label them as illustrative rather than copied from a real repository.
 
+If the source is a web page article, extract an evidence map before designing any quiz: section outline, key claims, definitions, cause/effect statements, constraints, and examples. Keep references to where each claim appears so every question can be traced back to the article.
+
 **What to extract:**
 - The main actors and their responsibilities
 - The primary learner journey from one meaningful action to an observable result
@@ -98,12 +120,15 @@ If the source is prompt-only, extract the core system shape from the prompt: act
 - Fragile points, bugs, or gotchas visible in code, tests, comments, git history, or design assumptions
 - Places where a learner can manually verify behavior or make a small safe change
 - The tech stack (real or proposed) and why each piece exists
+- For web articles: a list of quiz-worthy claims with article evidence anchors (heading/paragraph + short quote fragment)
 
-For codebase input, figure out what the app does yourself by reading the README, main entry points, and UI or CLI entry path. For prompt-only input, restate the intended product behavior and architecture in plain language before creating modules. In both cases, the first module should start with a concrete user action, such as "imagine you click Publish" or "imagine you run this command," and trace what happens under the hood.
+For codebase input, figure out what the app does yourself by reading the README, main entry points, and UI or CLI entry path. For prompt-only input, restate the intended product behavior and architecture in plain language before creating modules. For web article input, restate the article's key sections and claims in plain language, then map each planned quiz question to a specific evidence anchor. In all modes, begin from a concrete learner action and observable consequence.
 
 ### Phase 2: Curriculum Design
 
 Structure the course as **4-6 modules**. Most courses need 4-6. Only go to 7-8 if the source material genuinely has that many distinct concepts worth teaching. Fewer, stronger modules beat more, thinner ones.
+
+Exception: in **Article Quiz-Only Mode**, build a focused 1-module assessment (optionally 2 modules if a separate short recap module is needed).
 
 The arc should always start from what the learner can observe and move toward what they need to reason about. Think of it as zooming in: begin with the lived behavior, then peel back layers until the learner can explain the machinery and use that understanding elsewhere.
 
@@ -147,6 +172,8 @@ Include one capstone synthesis challenge at the end of the course that combines 
 - **Quizzes** - at least one per module.
 - **Glossary Tooltips** - on every technical term, first use per module.
 
+For **Article Quiz-Only Mode**, minimum required elements are quizzes, confidence checkpoints, and glossary tooltips. Other elements are optional when they materially improve understanding checks.
+
 **Mandatory learning moves (every course must include ALL of these):**
 - **Prediction checkpoints** - the learner must guess before the explanation appears
 - **Attempt-before-reveal gates** - hints and final solutions appear only after an explicit learner attempt
@@ -176,10 +203,12 @@ Read `references/module-brief-template.md` for the template structure. Read `ref
 - Pre-extracted source snippets:
   - If codebase-backed: copied from source with file paths and line numbers
   - If prompt-only: short illustrative snippets clearly labeled `Illustrative (not from repo)`
+  - If article-backed: short article excerpts with section/paragraph anchors for quiz evidence
 - Interactive elements checklist with enough detail to build them
 - The prediction checkpoint, practice prompt, delayed retrieval target, and reflection moves for the module
 - The misconception trap and transfer task for the module
 - The confidence checkpoint placement and hint ladder plan
+- For article-backed quizzes: per-question evidence anchors proving each question is grounded in the article
 - Which sections of which reference files the writing worker needs
 - What the previous and next modules cover, so transitions stay coherent
 

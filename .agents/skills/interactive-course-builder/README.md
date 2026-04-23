@@ -1,8 +1,8 @@
 # Interactive Course Builder
 
-A skill that turns either a real codebase or a prompt-only brief into a beautiful, interactive HTML course designed to help a human learner truly understand how the system works.
+A skill that turns a real codebase, a prompt-only brief, or a web article into a beautiful, interactive HTML course designed to help a human learner truly understand how the system works.
 
-Point it at a repo or give it a detailed prompt brief. Get back a self-contained course directory that teaches through scroll-based modules, animated visualizations, embedded quizzes, code-to-plain-language translations, and active practice prompts.
+Point it at a repo, give it a detailed prompt brief, or provide a web article URL. Get back a self-contained course directory that teaches through scroll-based modules, animated visualizations, embedded quizzes, code-to-plain-language translations, and active practice prompts.
 
 The skill supports two rigor profiles:
 
@@ -13,7 +13,7 @@ The skill supports two rigor profiles:
 
 People who want to understand a technical system with confidence, whether they already have a project or only have a concept/brief.
 
-The source may be a project assembled quickly from templates, copied examples, tutorials, or AI-assisted iteration. It may be an open-source codebase they want to study, or a prompt-only plan for something they have not built yet. The common problem is the same: the learner does not yet have a durable mental model of the system.
+The source may be a project assembled quickly from templates, copied examples, tutorials, or AI-assisted iteration. It may be an open-source codebase they want to study, a prompt-only plan for something they have not built yet, or a web article they want to learn deeply from. The common problem is the same: the learner does not yet have a durable mental model of the system.
 
 The course is built for learners who want to:
 
@@ -45,6 +45,12 @@ The output is a **directory** that can be opened directly in the browser. It inc
 2. Provide source input: a local project, GitHub repo, current directory, or prompt-only brief.
 3. Ask for a course, for example: "Turn this codebase into an interactive course" or "Create a course from this architecture brief."
 
+For article understanding checks, ask for quiz-only mode directly:
+
+- "Create a quiz from this article URL and check my understanding"
+- "Assessment only, based strictly on this webpage"
+- "Write a comprehension quiz using only this article"
+
 If you want maximum effort, ask for strict mode directly:
 
 - "Turn this codebase into a strict, high-rigor course"
@@ -61,6 +67,8 @@ If you want maximum effort, ask for strict mode directly:
 - "Teach me how this code works"
 - "Interactive tutorial from this code"
 - "Teach this architecture as a course"
+- "Create an article quiz from this URL"
+- "Quiz me on this article only"
 
 ## Design philosophy
 
@@ -80,7 +88,7 @@ Good questions ask what the learner would do in a new scenario, where they would
 
 ### Source fidelity first
 
-When real code exists, snippets should be copied exactly from the source project so the learner can verify them directly. For prompt-only courses, snippets must be clearly labeled as illustrative and should stay consistent with the prompt constraints.
+When real code exists, snippets should be copied exactly from the source project so the learner can verify them directly. For prompt-only courses, snippets must be clearly labeled as illustrative and should stay consistent with the prompt constraints. For web-article quizzes, every question and explanation must map back to explicit article evidence, with no external facts added.
 
 ## Credits
 
