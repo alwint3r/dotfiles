@@ -63,3 +63,29 @@ local tsserver_config = {
 
 lsp.config('tsserver', tsserver_config)
 lsp.enable('tsserver')
+
+local html_capabilities = require('cmp_nvim_lsp').default_capabilities()
+html_capabilities.textDocument = html_capabilities.textDocument or {}
+html_capabilities.textDocument.completion = html_capabilities.textDocument.completion or {}
+html_capabilities.textDocument.completion.completionItem = html_capabilities.textDocument.completion.completionItem or {}
+html_capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+local html_config = {
+  cmd = { 'vscode-html-language-server', '--stdio' },
+  filetypes = { 'html' },
+  root_markers = { 'package.json', '.git' },
+  single_file_support = true,
+  init_options = {
+    provideFormatter = true,
+    configurationSection = { 'html', 'css', 'javascript' },
+    embeddedLanguages = {
+      css = true,
+      javascript = true,
+    },
+  },
+  capabilities = html_capabilities,
+  on_attach = on_attach,
+}
+
+lsp.config('html', html_config)
+lsp.enable('html')

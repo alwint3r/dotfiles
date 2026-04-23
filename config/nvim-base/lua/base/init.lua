@@ -368,6 +368,15 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 	end
 })
 
+vim.api.nvim_create_autocmd('LspAttach', {
+	group = augroup,
+	desc = 'LSP keymaps',
+	callback = function(event)
+		local opts = { buffer = event.buf, noremap = true, silent = true }
+		vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+	end,
+})
+
 -- Common LSP
 vim.keymap.set('n', '<leader>f', function()
 	vim.lsp.buf.format { async = true }
@@ -380,6 +389,30 @@ vim.keymap.set('n', '<leader>d', function()
 		source = "always",
 	})
 end, { desc = 'Show diagnostics' })
+
+local html_capabilities = require('cmp_nvim_lsp').default_capabilities()
+html_capabilities.textDocument = html_capabilities.textDocument or {}
+html_capabilities.textDocument.completion = html_capabilities.textDocument.completion or {}
+html_capabilities.textDocument.completion.completionItem = html_capabilities.textDocument.completion.completionItem or {}
+html_capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+vim.lsp.config('html', {
+	cmd = { 'vscode-html-language-server', '--stdio' },
+	filetypes = { 'html' },
+	root_markers = { 'package.json', '.git' },
+	single_file_support = true,
+	init_options = {
+		provideFormatter = true,
+		configurationSection = { 'html', 'css', 'javascript' },
+		embeddedLanguages = {
+			css = true,
+			javascript = true,
+		},
+	},
+	capabilities = html_capabilities,
+})
+
+vim.lsp.enable('html')
 
 vim.lsp.config('sqruff', {
 })
