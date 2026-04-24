@@ -178,10 +178,55 @@ local function prefer_pinned_query(lang, query_group, source)
 	end
 end
 
+local function ensure_builtin_parser_runtimepath()
+	-- lazy.nvim can reset runtimepath and drop Neovim's libdir, while
+	-- bundled parser binaries live under "<prefix>/lib/nvim/parser".
+	if #vim.api.nvim_get_runtime_file('parser/markdown.*', false) > 0 then
+		return
+	end
+
+	local candidates = {}
+	local seen = {}
+
+	local function add_candidate(path)
+		if not path or path == '' or seen[path] then
+			return
+		end
+		seen[path] = true
+		table.insert(candidates, path)
+	end
+
+	local real_progpath = vim.uv.fs_realpath(vim.v.progpath) or vim.v.progpath
+	if real_progpath and real_progpath ~= '' then
+		local prefix_dir = vim.fs.dirname(vim.fs.dirname(real_progpath))
+		add_candidate(prefix_dir .. '/lib/nvim')
+	end
+
+	if vim.env.VIMRUNTIME and vim.env.VIMRUNTIME ~= '' then
+		local runtime_prefix = vim.fs.dirname(vim.fs.dirname(vim.env.VIMRUNTIME))
+		add_candidate(runtime_prefix .. '/lib/nvim')
+	end
+
+	for _, runtime_path in ipairs(vim.api.nvim_list_runtime_paths()) do
+		local runtime_prefix = runtime_path:match('^(.*)/share/nvim/runtime$')
+		if runtime_prefix then
+			add_candidate(runtime_prefix .. '/lib/nvim')
+		end
+	end
+
+	for _, builtin_runtime in ipairs(candidates) do
+		if vim.uv.fs_stat(builtin_runtime .. '/parser') then
+			vim.opt.runtimepath:append(builtin_runtime)
+			break
+		end
+	end
+end
+
 local function setup_treesitter()
 	-- Install non-bundled parsers and pinned query files with
 	-- `config/nvim-base/bin/install-parsers`.
 	local parser_install_dir = vim.fn.stdpath('data') .. '/site'
+	ensure_builtin_parser_runtimepath()
 
 	-- Neovim 0.12 ships parsers for the languages used by hover markdown.
 	-- Prefer them over any older nvim-treesitter copies to avoid
