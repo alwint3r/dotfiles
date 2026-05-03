@@ -287,8 +287,9 @@ vim.keymap.set('n', '<leader>ntf', '<cmd>NvimTreeFocus<cr>')
 vim.keymap.set('n', '<leader>G', '<cmd>G<cr>')
 
 local gfh_actions = require('telescope').extensions.git_file_history.actions
+local telescope = require('telescope')
 
-require('telescope').setup({
+telescope.setup({
 	extensions = {
 		fzf = {
 			fuzzy = true,
@@ -313,10 +314,10 @@ require('telescope').setup({
 		advanced_git_search = {},
 	},
 })
-require('telescope').load_extension('fzf')
-require('telescope').load_extension('ui-select')
-require('telescope').load_extension('git_file_history')
-require('telescope').load_extension('advanced_git_search')
+pcall(telescope.load_extension, 'fzf')
+telescope.load_extension('ui-select')
+telescope.load_extension('git_file_history')
+telescope.load_extension('advanced_git_search')
 
 -- Telescope Key Bindings
 vim.keymap.set('n', '<leader><space>', '<cmd>Telescope buffers<cr>')
