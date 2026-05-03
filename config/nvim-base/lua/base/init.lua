@@ -136,7 +136,7 @@ local function prefer_builtin_parser(lang)
 	end
 
 	for _, path in ipairs(vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', true)) do
-		if not path:match('/nvim%-treesitter/') then
+		if not path:gsub('\\', '/'):match('/nvim%-treesitter/') then
 			pcall(vim.treesitter.language.add, lang, { path = path })
 			return
 		end
@@ -150,7 +150,7 @@ local function prefer_builtin_query(lang, query_group)
 
 	local query_path = ('queries/%s/%s.scm'):format(lang, query_group)
 	for _, path in ipairs(vim.api.nvim_get_runtime_file(query_path, true)) do
-		if not path:match('/nvim%-treesitter/') then
+		if not path:gsub('\\', '/'):match('/nvim%-treesitter/') then
 			local ok, lines = pcall(vim.fn.readfile, path)
 			if ok and lines and #lines > 0 then
 				vim.treesitter.query.set(lang, query_group, table.concat(lines, '\n'))
