@@ -1,3 +1,5 @@
+local luasnip_build = vim.fn.executable('make') == 1 and 'make install_jsregexp' or nil
+
 return {
 	{ 'folke/tokyonight.nvim' },
 	{ 'nvim-lualine/lualine.nvim' },
@@ -33,7 +35,7 @@ return {
 	{ 'hrsh7th/cmp-nvim-lsp' },
 	{ 'hrsh7th/cmp-buffer' },
 	{ 'hrsh7th/cmp-path' },
-	{ 'L3MON4D3/LuaSnip',             build = 'make install_jsregexp' },
+	{ 'L3MON4D3/LuaSnip',             build = luasnip_build },
 	{ 'saadparwaiz1/cmp_luasnip' },
 	{ 'rafamadriz/friendly-snippets' },
 	{ 'isak102/telescope-git-file-history.nvim' },
