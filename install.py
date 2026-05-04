@@ -7,6 +7,17 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 STATUS = 0
 
 
+def config_target_dir() -> Path:
+    if sys.platform == "win32":
+        local_appdata = os.environ.get("LOCALAPPDATA")
+        if local_appdata:
+            return Path(local_appdata)
+
+        return Path.home() / "AppData" / "Local"
+
+    return Path.home() / ".config"
+
+
 def install_dir(source_dir: Path, target_dir: Path) -> None:
     global STATUS
 
@@ -43,12 +54,12 @@ def install_dir(source_dir: Path, target_dir: Path) -> None:
             STATUS = 1
             continue
 
-        os.symlink(str(item), str(target))
+        os.symlink(str(item), str(target), target_is_directory=item.is_dir())
         print(f"Created symlink {target} -> {item}")
 
 
 def main() -> int:
-    install_dir(SCRIPT_DIR / "config", Path.home() / ".config")
+    install_dir(SCRIPT_DIR / "config", config_target_dir())
     install_dir(SCRIPT_DIR / ".agents", Path.home() / ".agents")
     return STATUS
 
