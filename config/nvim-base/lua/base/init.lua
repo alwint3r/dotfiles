@@ -318,12 +318,25 @@ require('telescope').load_extension('ui-select')
 require('telescope').load_extension('git_file_history')
 require('telescope').load_extension('advanced_git_search')
 
+local telescope = require('telescope.builtin')
+
 -- Telescope Key Bindings
 vim.keymap.set('n', '<leader><space>', '<cmd>Telescope buffers<cr>')
 vim.keymap.set('n', '<leader>?', '<cmd>Telescope oldfiles<cr>')
 vim.keymap.set('n', '<leader>ff', '<cmd>Telescope find_files<cr>')
 vim.keymap.set('n', '<leader>fb', '<cmd>Telescope buffers<cr>')
-vim.keymap.set('n', '<leader>fg', '<cmd>Telescope live_grep<cr>') -- requires ripgrep
+-- vim.keymap.set('n', '<leader>fg', '<cmd>Telescope live_grep<cr>') -- requires ripgrep
+vim.keymap.set('n', '<leader>fg', function()
+	telescope.live_grep({
+		additional_args = function()
+			return {
+				"--hidden",
+				"--no-ignore",
+				"--no-ignore-parent",
+			}
+		end
+	})
+end, { desc = 'Live Grep' })
 vim.keymap.set('n', '<leader>fd', '<cmd>Telescope diagnostics<cr>')
 vim.keymap.set('n', '<leader>fs', '<cmd>Telescope current_buffer_fuzzy_find<cr>')
 vim.keymap.set('n', '<leader>fe', '<cmd>Telescope lsp_document_symbols<cr>')
