@@ -30,6 +30,18 @@ vim.opt.rtp:prepend(lazypath)
 
 require("base")
 
+vim.api.nvim_create_autocmd('FileType', {
+	pattern = 'python',
+	callback = function(args)
+		vim.bo[args.buf].autoindent = true
+		vim.bo[args.buf].smartindent = false
+		vim.bo[args.buf].cindent = false
+		vim.bo[args.buf].indentexpr = ''
+		vim.bo[args.buf].indentkeys = ''
+		vim.bo[args.buf].matchpairs = '{:},[:]'
+	end,
+})
+
 vim.lsp.config('ty', {
 	cmd = {
 		"ty",
