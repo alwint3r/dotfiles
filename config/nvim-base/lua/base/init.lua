@@ -224,7 +224,8 @@ end
 
 local function setup_treesitter()
 	-- Install non-bundled parsers and pinned query files with
-	-- `config/nvim-base/bin/install-parsers`.
+	-- `config/nvim-base/bin/install-parsers` or
+	-- `./config/nvim-base/bin/install-parsers.ps1` on PowerShell.
 	local parser_install_dir = vim.fn.stdpath('data') .. '/site'
 	ensure_builtin_parser_runtimepath()
 

@@ -6,6 +6,10 @@ Non-bundled parsers and query files are installed explicitly with:
 
     config/nvim-base/bin/install-parsers
 
+On PowerShell, run:
+
+    ./config/nvim-base/bin/install-parsers.ps1
+
 What the installer does:
 
 - clones pinned grammar repositories into the `nvim-base` data directory cache
