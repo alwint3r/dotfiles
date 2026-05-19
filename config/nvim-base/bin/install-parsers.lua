@@ -9,6 +9,8 @@ local site_dir = data_dir .. '/site'
 local parser_dir = data_dir .. '/' .. manifest.parser_output_dir
 local query_dir = data_dir .. '/' .. manifest.query_output_dir
 local cache_dir = data_dir .. '/' .. manifest.cache_dir
+local parser_extension = vim.fn.has('win32') == 1 and 'dll'
+	or (vim.fn.has('mac') == 1 and 'dylib' or 'so')
 
 local function info(msg)
 	io.stdout:write(msg .. '\n')
@@ -116,7 +118,7 @@ local function install_parser(entry)
 		fail('Missing grammar definition for ' .. entry.lang .. ' in ' .. grammar_dir)
 	end
 
-	local output = parser_dir .. '/' .. entry.lang .. '.so'
+	local output = parser_dir .. '/' .. entry.lang .. '.' .. parser_extension
 	info('Building parser ' .. entry.lang)
 	run({ 'tree-sitter', 'build', '-o', output, grammar_dir })
 
