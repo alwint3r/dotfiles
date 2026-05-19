@@ -61,6 +61,31 @@ local function path_type(path)
 	return stat and stat.type or nil
 end
 
+local function copy_file(src, dst)
+	local ok, err = vim.uv.fs_copyfile(src, dst)
+	if not ok then
+		fail(('Failed to copy %s to %s: %s'):format(src, dst, err or 'unknown error'))
+	end
+end
+
+local function copy_tree(src, dst, opts)
+	if not path_exists(src) then
+		fail('Missing directory to copy: ' .. src)
+	end
+	opts = opts or {}
+	ensure_dir(dst)
+	for name, type in vim.fs.dir(src) do
+		local src_file = src .. '/' .. name
+		local dst_file = dst .. '/' .. name
+		if type == 'directory' then
+			copy_tree(src_file, dst_file, opts)
+		elseif opts.overwrite or not path_exists(dst_file) then
+			copy_file(src_file, dst_file)
+		end
+	end
+	return dst
+end
+
 local function sync_repo(repo, revision)
 	local repo_name = basename(repo)
 	local repo_dir = cache_dir .. '/' .. repo_name
@@ -83,7 +108,7 @@ local function copy_dir(src, dst)
 	end
 	vim.fn.delete(dst, 'rf')
 	ensure_dir(vim.fs.dirname(dst))
-	run({ 'cp', '-R', src, dst })
+	copy_tree(src, dst)
 end
 
 local function copy_into_dir(src, dst, opts)
@@ -102,7 +127,7 @@ local function copy_into_dir(src, dst, opts)
 		if type == 'directory' then
 			copy_into_dir(src_file, dst_file, opts)
 		elseif opts.overwrite or not path_exists(dst_file) then
-			run({ 'cp', src_file, dst_file })
+			copy_file(src_file, dst_file)
 		end
 	end
 end
