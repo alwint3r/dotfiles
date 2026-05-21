@@ -328,6 +328,13 @@ local telescope = require('telescope.builtin')
 vim.keymap.set('n', '<leader><space>', '<cmd>Telescope buffers<cr>')
 vim.keymap.set('n', '<leader>?', '<cmd>Telescope oldfiles<cr>')
 vim.keymap.set('n', '<leader>ff', '<cmd>Telescope find_files<cr>')
+vim.keymap.set('n', '<leader>fF', function()
+	telescope.find_files({
+		hidden = true,
+		no_ignore = true,
+		no_ignore_parent = true,
+	})
+end, { desc = 'Find Files (no ignore)' })
 vim.keymap.set('n', '<leader>fb', '<cmd>Telescope buffers<cr>')
 -- vim.keymap.set('n', '<leader>fg', '<cmd>Telescope live_grep<cr>') -- requires ripgrep
 vim.keymap.set('n', '<leader>fg', function()
