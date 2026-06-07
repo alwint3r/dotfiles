@@ -1,15 +1,16 @@
 # Module Brief Template
 
-> **When to read this:** During Phase 2.5 for complex-scope courses. Fill in one brief per module and save it to `course-name/briefs/0N-slug.md`. Each brief should give a module-writing worker everything it needs to write one module without reading the full source corpus or `SKILL.md`.
+> **When to read this:** During Phase 2.5 for complex-scope and mastery-scope courses. Fill in one brief per module and save it to `course-name/briefs/0N-slug.md`. Each brief should give a module-writing worker everything it needs to write one module without reading the full source corpus or `SKILL.md`.
 
 ---
 
 ## Module N: [Title]
 
 ### Effort Profile
-- **Profile:** [Strict or Balanced]
+- **Profile:** [Strict, Balanced, or Mastery]
 - **Target challenge level:** [How demanding this module should feel]
-- **Passive explanation cap:** [Strict: <= 90 seconds, Balanced: <= 2-3 minutes]
+- **Passive explanation cap:** [Strict: <= 90 seconds, Balanced/Mastery: <= 2-3 minutes]
+- **Act placement (Mastery only):** [Act I: Foundation / Act II: Core Machinery / Act III: Synthesis]. Describes the module's role in the three-act arc.
 
 ### Teaching Arc
 - **Metaphor:** [A fresh, specific metaphor. Never "restaurant."]
@@ -91,6 +92,17 @@ List only the sections the writing worker needs, not the whole file.
 - `references/design-system.md` -> [only if needed for specific tokens not already clear from the brief]
 - `references/content-philosophy.md` -> [always include]
 - `references/gotchas.md` -> [always include]
+
+### Spiral & Retrieval (Mastery only)
+
+Only fill in for Mastery profile courses. Leave blank otherwise.
+
+- **Concepts introduced here:** [What new concepts does this module introduce for the first time?]
+- **Concepts deepened from earlier modules:** [Which concepts from earlier modules does this module revisit with greater depth? Reference specific module numbers.]
+- **Concepts previewed for later modules:** [What does this module briefly mention that will be explored fully later? Reference target modules.]
+- **Delayed retrieval targets (from earlier):** [Which specific concepts from past modules does this module quiz/recall? List module numbers and concept names.]
+- **Delayed retrieval targets (for later):** [What from this module should later modules quiz/recall?]
+- **Metaphor used:** [Record the metaphor here so 00-mastery-plan.md can track it. Must be unique within the course.]
 
 ### Connections
 

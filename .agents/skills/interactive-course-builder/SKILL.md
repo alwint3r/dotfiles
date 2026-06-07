@@ -19,8 +19,9 @@ When the skill is first triggered and the user has not specified source material
 > - **The current project** - if you are already inside a codebase, say "turn this into a course"
 > - **A prompt brief only** - for example, "create a course about building a realtime chat backend from scratch"
 > - **A web page article URL** - for example, "create a quiz from https://example.com/article and test my understanding"
+> - **A deep-dive long course** - for example, "teach me how to rasterize a triangle with Vulkan from scratch" or "I want a comprehensive course on writing a compiler"
 >
-> I will analyze the input, map concepts and flows, and generate a browser-based course with diagrams, walkthroughs, quizzes, prediction checkpoints, and practice drills. The goal is not passive explanation. The goal is to help you build real understanding.
+> For standard topics, I generate 4-8 module courses. For non-trivial deep dives (like Vulkan, compilers, databases), I generate 10-20 module mastery courses with a three-act spiral structure, cumulative checkpoints, and deliberate retrieval across the full journey. The goal is not passive explanation. The goal is to help you build real understanding.
 
 If the user provides a GitHub link, clone the repo first (`git clone <url> /tmp/<repo-name>`) before starting the analysis. If they say "this codebase" or similar, use the current working directory. If they provide prompt-only input, do not block waiting for a repository; proceed using the prompt as the source of truth. If they provide a web article URL, fetch and read the article first, then build from that article as the sole source of truth.
 
@@ -69,15 +70,17 @@ Every generated course must declare one effort profile and enforce it throughout
 
 - **Strict profile** (maximum effort): Use when the user asks for maximum effort, interview-level rigor, hard mode, intense practice, or deep mastery.
 - **Balanced profile** (default): Use when the user asks for a normal course and does not request extreme rigor.
+- **Mastery profile** (long-form deep dive): Use when the user asks for a really long course, comprehensive coverage, "teach me X from scratch," or explicitly wants 10+ modules. This profile is designed for non-trivial topics (e.g., building a Vulkan renderer, writing a compiler, implementing a database engine) where the learner needs to internalize a large, interconnected system over many hours.
 
 Do not ask for profile selection unless the user explicitly asks to choose. Infer from intent.
 
-| Profile | Passive explanation cap | Required module loop | Hint policy | Retrieval policy |
-|---|---|---|---|---|
-| Strict | <= 90 seconds before action | Prediction -> Attempt -> Feedback -> Explanation -> Transfer | 3-level progressive hints; full solution hidden until first attempt | At least 2 delayed retrieval prompts per module from earlier modules |
-| Balanced | <= 2-3 minutes before action | Prediction -> Attempt -> Feedback -> Explanation -> Transfer | 2-3 level hints; full solution hidden until first attempt | At least 1 delayed retrieval prompt per module from earlier modules |
+| Profile | Passive explanation cap | Required module loop | Hint policy | Retrieval policy | Target length |
+|---|---|---|---|---|---|
+| Strict | <= 90 seconds before action | Prediction -> Attempt -> Feedback -> Explanation -> Transfer | 3-level progressive hints; full solution hidden until first attempt | At least 2 delayed retrieval prompts per module from earlier modules | 4-8 modules |
+| Balanced | <= 2-3 minutes before action | Prediction -> Attempt -> Feedback -> Explanation -> Transfer | 2-3 level hints; full solution hidden until first attempt | At least 1 delayed retrieval prompt per module from earlier modules | 4-8 modules |
+| Mastery | <= 2-3 minutes before action | Prediction -> Attempt -> Feedback -> Explanation -> Transfer | 3-level progressive hints; full solution hidden until first attempt | At least 2 delayed retrieval prompts per module from earlier modules, plus at least 3 cumulative retrieval checkpoints across the full course | 10-20 modules |
 
-**Hard requirement for both profiles:** explanations come after learner effort. Never reveal the answer before a meaningful attempt.
+**Hard requirement for all profiles:** explanations come after learner effort. Never reveal the answer before a meaningful attempt.
 
 ---
 
@@ -126,11 +129,15 @@ For codebase input, figure out what the app does yourself by reading the README,
 
 ### Phase 2: Curriculum Design
 
-Structure the course as **4-6 modules**. Most courses need 4-6. Only go to 7-8 if the source material genuinely has that many distinct concepts worth teaching. Fewer, stronger modules beat more, thinner ones.
+**For Balanced and Strict profiles:** Structure the course as **4-6 modules**. Most courses need 4-6. Only go to 7-8 if the source material genuinely has that many distinct concepts worth teaching. Fewer, stronger modules beat more, thinner ones.
+
+**For Mastery profile (long-form deep dive):** Structure the course as **10-20 modules**. These courses cover non-trivial topics where the learner needs to build a system from zero understanding to working implementation. Each module should be a self-contained unit that builds one concrete capability, but modules should form a deliberate spiral: concepts introduced early are revisited with increasing depth later.
 
 Exception: in **Article Quiz-Only Mode**, build a focused 1-module assessment (optionally 2 modules if a separate short recap module is needed).
 
 The arc should always start from what the learner can observe and move toward what they need to reason about. Think of it as zooming in: begin with the lived behavior, then peel back layers until the learner can explain the machinery and use that understanding elsewhere.
+
+#### Module Purpose Table (4-8 module courses)
 
 | Module Position | Purpose | Human skill built |
 |---|---|---|
@@ -143,6 +150,48 @@ The arc should always start from what the learner can observe and move toward wh
 | 7 | The big picture | Consolidate the architecture and transfer the lessons to future changes |
 
 This is a **menu, not a checklist**. Pick the modules that serve the source material. A small CLI tool or narrow concept might need 4. A full-stack app might need 6 or 7.
+
+#### Module Arc for Mastery (10-20 module courses)
+
+For long-form courses, the modules follow a three-act structure with deliberate spiraling:
+
+**Act I: Foundation & Orientation (modules ~1-4)**
+
+| Module Role | Purpose | Human skill built |
+|---|---|---|
+| Orientation | What are we building and why? End-to-end behavior demo, mental model preview | Anchor the destination — the learner can picture what success looks like |
+| Prerequisites & Setup | Toolchain, environment, core concepts the learner must install and verify | Build the learner's workspace; verify they can compile/run before coding |
+| First Contact | The simplest possible working example — write it, run it, inspect it | Trace a complete execution from source to output without abstraction |
+| Conceptual Foundation | The big ideas and vocabulary of the domain (not code yet — mental models) | Map the conceptual territory so the learner has language for what follows |
+
+**Act II: Core Machinery (modules ~5-14)**
+
+For a deep technical topic, decompose it into its natural subsystems. Each subsystem gets 1-3 modules following this pattern:
+- **Module A: What it does and why it exists** (concept, observable behavior, metaphor)
+- **Module B: How it works internally** (code walkthrough, data structures, algorithms, tracing)
+- **Module C: When it breaks and how to fix it** (failure modes, debugging, edge cases, tuning)
+
+| Module Role | Purpose | Human skill built |
+|---|---|---|
+| Subsystem: Purpose | Why this piece exists in the architecture and what would break without it | Reason about architectural necessity; trace dependency chains |
+| Subsystem: Machinery | Walk the implementation line by line. Data structures, algorithms, control flow | Read and explain complex implementation code; map code to concepts |
+| Subsystem: Failure Modes | Common bugs, edge cases, performance cliffs, misconfigurations | Debug this subsystem; form and test hypotheses; recognize anti-patterns |
+| Cross-Cutting: Data Flow | How data moves between subsystems. Tracing a request/pixel/transaction end-to-end | Cross-boundary tracing; understand coupling and contracts |
+| Cross-Cutting: Control Flow | Synchronization, ordering, state machines, lifecycle management | Reason about concurrency, ordering, and temporal behavior |
+
+**Act III: Synthesis & Mastery (modules ~15-20)**
+
+| Module Role | Purpose | Human skill built |
+|---|---|---|
+| Integration | Put subsystems together. Handle real-world coordination complexity | Integrate independently-understood pieces into a coherent whole |
+| Performance & Profiling | Measure, analyze, and optimize the system | Use tools to find bottlenecks; form and test performance hypotheses |
+| The Big Picture | Full architecture review. How every piece fits. Design rationale and alternatives | Articulate the complete system design and justify design choices |
+| Extend & Transfer | Add a feature the course didn't build. Apply patterns to a different domain | Design and implement independently; recognize reusable patterns |
+| Capstone | Build something real that combines at least 3 subsystems | Synthesize everything into a working artifact without scaffolding |
+
+This is a **menu, not a checklist**. For a 12-module Vulkan course, you might pick: Orientation, Setup, First Triangle (conceptual), Instance & Devices, Swapchain, Pipeline (shaders + layout), Render Pass & Framebuffer, Command Buffers, Synchronization, Drawing the Triangle (integration), Debugging & Validation, Performance & Extend.
+
+The key principle is the same: every module answers "what skill does this build?" before "what concept does this explain?"
 
 **The key principle:** Every module should connect back to a real human skill. If a module does not help the learner inspect, predict, trace, debug, or modify code with more independence, cut it or reframe it until it does.
 
@@ -162,8 +211,9 @@ This is a **menu, not a checklist**. Pick the modules that serve the source mate
 |---|---|---|---|---|---|---|
 | Strict | 2+ | 2+ | 1+ | 1+ | 1+ | Before and after each major task |
 | Balanced | 1+ | 1+ | 1 every 1-2 modules | 1 every module | 1 every 1-2 modules | Before and after each module |
+| Mastery | 2+ | 2+ | 1+ | 1+ | 1+ | Before and after each module + before and after each cumulative checkpoint |
 
-Include one capstone synthesis challenge at the end of the course that combines at least two modules (strict: at least three modules).
+Include one capstone synthesis challenge at the end of the course that combines at least two modules (strict: at least three modules, mastery: at least five modules). For Mastery profile, also include cumulative checkpoints at the end of each Act that test synthesis across all modules in that Act.
 
 **Mandatory interactive elements (every course must include ALL of these):**
 - **Group Chat Animation** - at least one across the course. These component conversations are highly engaging and make coordination visible.
@@ -190,11 +240,12 @@ Do **not** present the curriculum for approval. Design it internally, then build
 After designing the curriculum, decide which build path to use:
 
 - **Simple course scope** (single-purpose CLI, small web app, narrow prompt brief, one clear flow, 5 or fewer modules) -> go directly to Phase 3 Sequential.
-- **Complex course scope** (full-stack app, multiple services, content-heavy domain brief, monorepo, or 6+ modules) -> go to Phase 2.5 first, then Phase 3 Parallel.
+- **Complex course scope** (full-stack app, multiple services, content-heavy domain brief, monorepo, or 6-9 modules) -> go to Phase 2.5 first, then Phase 3 Parallel.
+- **Mastery course scope** (10+ modules, deep technical topic, Mastery profile) -> go to Phase 2.5 first with extended briefs (see Mastery extension below), then Phase 3 Parallel in larger batches.
 
-### Phase 2.5: Module Briefs (complex scope only)
+### Phase 2.5: Module Briefs (complex and mastery scope)
 
-For complex courses, write a brief for each module before writing any HTML. This is the critical step that enables parallel writing. Each brief should give a module-writing worker everything it needs without re-reading raw source inputs.
+For complex and mastery courses, write a brief for each module before writing any HTML. This is the critical step that enables parallel writing. Each brief should give a module-writing worker everything it needs without re-reading raw source inputs.
 
 Read `references/module-brief-template.md` for the template structure. Read `references/content-philosophy.md` for the content rules that should guide brief writing.
 
@@ -214,6 +265,17 @@ Read `references/module-brief-template.md` for the template structure. Read `ref
 
 The source snippets are the critical token-saving step. By pre-extracting them into the brief, writing workers never need to read the full raw source corpus.
 
+#### Mastery Extension: Course-Level Brief
+
+For Mastery profile courses (10+ modules), write one additional course-level brief at `course-name/briefs/00-mastery-plan.md` before writing per-module briefs. This document contains:
+
+- **The spiral map:** A table of every major concept and which modules introduce, deepen, and transfer it. This ensures concepts aren't taught once and forgotten — they reappear with increasing depth.
+- **The dependency graph:** Which modules depend on which earlier modules. This prevents writing Module 8 before knowing what Module 3 actually established.
+- **The metaphor register:** A list of metaphors already used, to prevent accidental reuse across 10-20 modules.
+- **The retrieval schedule:** Which earlier concepts each module must reactivate with delayed retrieval prompts.
+- **The cumulative checkpoint plan:** At least 3 points in the course where the learner demonstrates synthesis across multiple modules (not just the capstone at the end). These are placed at the end of Act I, mid Act II, and end of Act III.
+- **Module grouping for parallel dispatch:** Workers are dispatched in groups of 3-5 modules that share conceptual territory. Modules 1-4 (Foundation) can be written together. Then 5-8, then 9-12, then 13-16, then 17-20. Within each group, briefs include enough context about adjacent modules that transitions stay coherent without workers needing to read every other brief.
+
 ### Phase 3: Build the Course
 
 The course output is a **directory**, not a single file. All CSS and JS are pre-built reference files. Do not regenerate them. Your job is to write only the HTML content and customize the shell.
@@ -226,7 +288,7 @@ course-name/
   _base.html       <- customized shell (title, accent color, nav dots)
   _footer.html     <- copied verbatim from references/_footer.html
   build.sh         <- copied verbatim from references/build.sh
-  briefs/          <- module briefs (complex scope only, can delete after build)
+  briefs/          <- module briefs (complex and mastery scope only, can delete after build)
   modules/
     01-intro.html
     02-actors.html
@@ -253,20 +315,26 @@ Read `references/content-philosophy.md` and `references/gotchas.md`. Then write 
 
 Read `references/interactive-elements.md` for HTML patterns for each interactive element type. Read `references/design-system.md` for visual conventions.
 
-#### Parallel path (complex scope)
+#### Parallel path (complex and mastery scope)
 
-Dispatch modules to workers in batches of up to 3. Each worker receives:
+**For complex scope (6-9 modules):** Dispatch modules to workers in batches of up to 3. Each worker receives:
 - Its module brief from `course-name/briefs/`
 - `references/content-philosophy.md` and `references/gotchas.md`
 - Only the sections of `references/interactive-elements.md` and `references/design-system.md` listed in the brief
+
+**For mastery scope (10-20 modules):** Dispatch in grouped batches of 3-5 modules following the groupings in `00-mastery-plan.md`. The first batch contains Act I (Foundation) modules. Subsequent batches contain Act II (Core Machinery) groups. The final batch contains Act III (Synthesis) modules. Each worker in a batch receives the same materials as complex scope, plus the course-level mastery plan for context on the spiral and retrieval schedule.
 
 Each worker writes its module file or files to `course-name/modules/`. Short modules can be paired if one worker can cover them cleanly.
 
 **What workers do NOT receive:** the full raw source corpus (snippets are in the brief), `SKILL.md`, other modules' briefs, or unneeded reference file sections.
 
-After all workers finish, do a quick consistency check in the main context: nav dots match modules, transitions between modules are coherent, tone is steady, and the prediction/practice prompts remain concrete rather than generic.
+After each batch finishes, do a consistency check in the main context: nav dots match modules, transitions between modules are coherent, tone is steady, and the prediction/practice prompts remain concrete rather than generic. After the final batch, run a full-course review:
 
-Also verify that each module still follows the selected effort profile, including attempt-before-reveal gates, delayed retrieval, misconception traps, and confidence calibration.
+- Verify the spiral map: each major concept appears at least 2-3 times with increasing depth.
+- Verify the retrieval schedule: delayed retrieval prompts reference the correct earlier modules.
+- Verify cumulative checkpoints: at least 3 synthesis challenges exist and span multiple modules.
+- Verify no metaphor reuse across the full 10-20 modules.
+- Verify effort profile consistency: attempt-before-reveal gates, delayed retrieval, misconception traps, and confidence calibration are present.
 
 **Step 4 (both paths): Assemble** - Run `build.sh` from the course directory:
 ```bash
@@ -311,6 +379,6 @@ The `references/` directory contains detailed specs. Read them only when you rea
 
 - **`references/content-philosophy.md`** - visual density rules, metaphor guidelines, desirable difficulty constraints, prediction and quiz design, tooltip rules, code translation guidance, and practice-loop guidance. Read during Phase 2.5 (briefs) and Phase 3 (writing modules).
 - **`references/gotchas.md`** - common failure points checklist. Read during Phase 3 and Phase 4 (review).
-- **`references/module-brief-template.md`** - template for Phase 2.5 module briefs. Read only for complex-scope courses using the parallel path.
+- **`references/module-brief-template.md`** - template for Phase 2.5 module briefs. Read only for complex-scope and mastery-scope courses using the parallel path.
 - **`references/design-system.md`** - complete CSS custom properties, color palette, typography scale, spacing system, shadows, animations, scrollbar styling. Read during Phase 3 when writing module HTML.
 - **`references/interactive-elements.md`** - implementation patterns for quizzes, animations, translation blocks, attempt gates, confidence checkpoints, effort rubrics, diagrams, and callout structures. Read only the relevant sections during Phase 3.

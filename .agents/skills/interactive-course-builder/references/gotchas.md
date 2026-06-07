@@ -79,3 +79,35 @@ No confidence checks, or confidence is never compared to actual outcomes. Add be
 ### Weak Transfer
 
 Questions test only local recall from the same screen. Include at least one new-context transfer task per module (or every 1-2 modules for balanced pacing).
+
+### Mastery-Specific Gotchas
+
+These apply only to Mastery profile courses (10-20 modules).
+
+### Spiral Without Depth
+
+A concept reappears in later modules but at the same depth as the first introduction. "We revisit the swapchain" but the second pass just restates what Module 3 said. Each spiral pass must go deeper: first pass = what it does, second pass = how it works internally, third pass = what breaks and how to fix it.
+
+### Metaphor Exhaustion
+
+Running out of good metaphors by module 12 and resorting to weak or recycled ones. The metaphor register in `00-mastery-plan.md` must be maintained throughout all 10-20 briefs. If you struggle to find a fresh metaphor for a subsystem, use a spatial/visual metaphor (conveyor belt, post office, traffic light, plumbing, etc.) or a process metaphor (recipe, assembly line, check-in counter). Review the register before each module.
+
+### Late-Module Fatigue
+
+Modules 14-18 become thin and rushed because the writer is running out of energy. The parallel dispatch system (grouped batches) prevents this, but the consistency check after each batch must verify that Act III modules match the rigor of Act I modules. If fatigue is visible, slow down and write each batch as carefully as the first.
+
+### Cumulative Checkpoint Collapse
+
+Cumulative checkpoints at end-of-Act become token recall quizzes instead of genuine synthesis. A cumulative checkpoint should present a new scenario that requires reasoning across 3+ modules, not a list of trivia questions. The learner should have to trace a cross-cutting concern (e.g., "trace a pixel from shader to screen, identifying every Vulkan object it touches") rather than answer "what does vkCreateSwapchainKHR do?"
+
+### Missing the Dependency Graph
+
+Module 8 assumes Module 5 taught a concept in depth, but Module 5 only introduced it briefly. The dependency graph in `00-mastery-plan.md` prevents this: every module declares what it depends on and what it establishes for later modules. If a dependency is only shallowly covered, the brief must note this so the dependent module can fill the gap.
+
+### Navigation Overwhelm
+
+A 20-module course has 20 nav dots in a single row, making navigation difficult. Consider grouping nav dots into act-based clusters with visible act labels, or using a collapsible nav that shows act groupings. The `_base.html` nav must scale gracefully to 20 modules.
+
+### Scope Creep
+
+A 12-module plan becomes 20 modules because every interesting detail gets its own module. Resist. Each module must earn its place by building a distinct human skill. If two proposed modules teach the same skill at the same level, merge them. A 12-module course that is consistently rigorous beats a 20-module course that is padded.

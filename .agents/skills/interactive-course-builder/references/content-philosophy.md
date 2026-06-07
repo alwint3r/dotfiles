@@ -175,3 +175,42 @@ Do not tell the learner to ask AI for the answer, the explanation, or the code c
 - Which input to vary
 - Which symptom to compare against the expected behavior
 - Which earlier module to recall
+
+### Long-Form Course Design (Mastery Profile)
+
+These principles apply specifically when building 10-20 module courses for non-trivial topics.
+
+#### Spiral, Don't Repeat
+
+Concepts must reappear with increasing depth, not repetition. The pattern for a concept across the course:
+- **First encounter (Act I):** "Here's what this thing does and why it exists." Conceptual, metaphor-driven, high-level.
+- **Second encounter (Act II):** "Here's how this thing works internally." Walk the code, data structures, algorithms, tradeoffs.
+- **Third encounter (Act III):** "Here's what breaks, how to fix it, and how it connects to everything else." Debugging, optimization, cross-cutting reasoning.
+
+Do not revisit a concept just to remind the learner it exists. Each revisit must add a layer of understanding that was not accessible before.
+
+#### Cumulative Checkpoints: Test Synthesis, Not Recall
+
+At the end of each Act, include a cumulative checkpoint that demands reasoning across multiple modules. These are not quizzes — they are extended exercises:
+- **End of Act I:** "Given what you now know about the building blocks, predict what would happen if..." (integrates modules 1-4)
+- **Mid Act II:** "Trace this cross-cutting scenario through subsystems A, B, and C. Where does it touch each one?" (integrates modules 5-10)
+- **End of Act III:** The capstone — build or modify something real that combines at least 5 modules.
+
+Each checkpoint should take the learner 15-30 minutes of active work, not 2 minutes of clicking.
+
+#### Metaphor Management at Scale
+
+A 20-module course needs 20 distinct, fresh metaphors. Plan the metaphor register in `00-mastery-plan.md` before writing any briefs. Categories to draw from:
+- **Physical systems:** plumbing, electricity, conveyor belts, traffic, postal service, assembly lines
+- **Biological systems:** immune system, nervous system, digestion, photosynthesis, ant colonies
+- **Social systems:** restaurant kitchen (use once only), airport, hospital, orchestra, sports team
+- **Everyday processes:** cooking a recipe, packing for a trip, checking into a hotel, running errands
+
+Do not reuse a category until at least 5 modules have passed. Review the register before writing each module's metaphor.
+
+#### Pacing in Long Courses
+
+The learner will spend many hours with this course. Vary the rhythm:
+- High-intensity modules (dense code walkthroughs, hard debugging tasks) should be followed by lower-intensity modules (conceptual overviews, architecture diagrams, reflection).
+- Every 4-5 modules, include a "breather" module that consolidates without introducing a major new subsystem.
+- The capstone should feel earned, not exhausting. By the time the learner reaches it, they should have already done most of the hard thinking.
