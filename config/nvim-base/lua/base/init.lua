@@ -357,10 +357,20 @@ vim.keymap.set('n', '<leader>gs', function()
 	require('telescope').extensions.advanced_git_search.show_custom_functions()
 end, { desc = 'Advanced Git Search' })
 
+local toggleterm_shell = nil
+if vim.fn.has('win32') == 1 then
+	if vim.fn.executable('pwsh') == 1 then
+		toggleterm_shell = 'pwsh'
+	else
+		toggleterm_shell = 'powershell'
+	end
+end
+
 require('toggleterm').setup({
 	open_mapping = '<C-g>',
 	direction = 'horizontal',
 	shade_terminal = true,
+	shell = toggleterm_shell,
 	on_open = function(term)
 		local opts = { buffer = term.bufnr, noremap = true, silent = true }
 		vim.keymap.set('t', '<S-C-x>', [[<C-\><C-n>]], opts)
