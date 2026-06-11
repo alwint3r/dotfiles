@@ -9,9 +9,9 @@ These principles are what separate a great course from a generic tutorial.
 People stop paying attention when a course turns into a wall of paragraphs. The course should feel closer to an infographic than a textbook. Follow these hard rules:
 
 **Text limits:**
-- Max **2-3 sentences** per text block. If you are writing a fourth sentence, stop and convert it into a visual instead.
-- No text block should ever be wider than the content width and taller than about 4 lines. If it is, break it up with a visual element.
-- Every screen must be **at least 50% visual** (diagrams, code blocks, cards, animations, badges, timelines, flow steps, or other non-paragraph teaching elements).
+- Text block length is driven by **concept complexity**, not a rigid sentence cap. Simple concepts: 1-3 sentences per block. Complex and foundational concepts: 4-8 sentences per block is fine if the prose is building a coherent, layered explanation. The test is: *does every sentence in this block teach something the learner needs to understand the next sentence?* If yes, keep writing. If a sentence is filler or could be a tooltip, cut it.
+- No text block should be a wall of undifferentiated paragraphs. Even deep explanations must include strategic breaks: code snippets, diagrams, prediction checkpoints, callout boxes, or glossary tooltips. These breaks should support the explanation, not replace it prematurely.
+- **Visual balance by concept complexity:** Simple concepts lean visual-heavy (50%+ visual). Complex and foundational concepts are prose-led — the primary teaching medium is deep, structured explanation, with visuals playing a supporting role. The screen should not feel like an infographic when the goal is deep conceptual understanding.
 
 **Convert text to visuals:**
 - A list of 3+ items -> **cards with icons**
@@ -59,8 +59,9 @@ Learning should feel effortful in a productive way. Avoid "explain first, quiz l
 - Treat temporary struggle as a design goal when it leads to better transfer.
 
 **Profile constraints:**
-- **Strict profile:** no passive explanation longer than about 90 seconds without an action.
-- **Balanced profile:** no passive explanation longer than about 2-3 minutes without an action.
+- All profiles follow the Concept Complexity & Explanation Depth model from SKILL.md. Explanation depth is driven by what the concept requires for genuine understanding, not by a fixed clock.
+- **Strict profile:** Even during deep explanations, include a prediction checkpoint or interactive break at least once per screen. The learner should never feel they are passively consuming for more than a screen's worth of content without pausing to think.
+- **Balanced and Mastery profiles:** Deep explanations can span multiple screens without forced interactivity on every screen. The natural rhythm is: explain → predict/check → explain deeper → trace/attempt → reflect. Let the concept's teaching needs drive the pacing.
 
 ### Use a Metacognitive Loop
 

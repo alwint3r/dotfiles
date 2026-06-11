@@ -64,6 +64,30 @@ Every course must repeatedly use these pillars of learning:
 
 The course must not tell the learner to hand the hard part to AI. If the learner is stuck, the course should direct them back to the source material, the observable behavior, and a concrete next observation they can make themselves.
 
+## Concept Complexity & Explanation Depth
+
+Not all concepts need the same amount of explanation. The course must adjust reading depth to match concept complexity — some ideas are simple and can be explained in a paragraph; others are dense and need a multi-screen deep-dive before the learner can reason about them.
+
+**Concept complexity heuristic:** Before writing each module, ask: *"Can a learner who has never seen this concept before explain it back to me in their own words after reading the explanation?"* If the answer is no, the explanation needs more depth.
+
+| Complexity tier | Indicators | Minimum explanation depth | Maximum uninterrupted prose per screen | Visual balance |
+|---|---|---|---|---|
+| **Simple** | Definition-like concept, single-step, no dependencies | 1-2 paragraphs, 1 screen | 3-4 paragraphs | Heavy visual emphasis (50%+ visual) |
+| **Moderate** | Multi-step concept, 1-2 dependencies, requires tracing | 2-4 paragraphs across 1-2 screens | 3-4 paragraphs | Balanced (visuals and text alternate naturally) |
+| **Complex** | Multi-layered, 3+ dependencies, requires tracing + reasoning + transfer to understand | 4-8 paragraphs across 2-4 screens | 5-6 paragraphs, followed by a visual or interactive break | Visuals support but don't dominate; deep prose is the primary teaching medium |
+| **Foundational** | Core abstraction that the rest of the course builds on (e.g., graphics pipeline in Vulkan, type system in a compiler, B-tree in a database) | 6-12 paragraphs across 3-6 screens, with progressive revelation (introduce → explain → trace → connect) | Up to 6 paragraphs, broken by inline code snippets, diagrams, or prediction checkpoints | Prose-led with strategic visuals; the goal is deep conceptual clarity, not visual appeal |
+
+**Hard rule:** Even for complex and foundational concepts, every screen must include at least one interactive or visual break (code block, diagram, prediction checkpoint, callout box, or glossary tooltip). No screen should be a wall of undifferentiated text. But the break should serve the explanation, not truncate it.
+
+**Progressive revelation for deep concepts:** Don't dump all paragraphs at once. Reveal understanding in layers:
+1. **What it is** — metaphor and plain-language definition (1-2 paragraphs)
+2. **Why it exists** — the problem it solves, what breaks without it (1-2 paragraphs)
+3. **How it works** — mechanism, data structures, step-by-step trace (2-4 paragraphs)
+4. **How it connects** — where it fits in the larger system, what depends on it (1-2 paragraphs)
+5. **When it fails** — edge cases, gotchas, debugging surface (1-2 paragraphs)
+
+Each layer can be a separate screen with its own interactive element. The learner should feel they are descending into understanding, not being hit with a wall of text.
+
 ## Effort Profiles (Required)
 
 Every generated course must declare one effort profile and enforce it throughout all modules.
@@ -74,11 +98,11 @@ Every generated course must declare one effort profile and enforce it throughout
 
 Do not ask for profile selection unless the user explicitly asks to choose. Infer from intent.
 
-| Profile | Passive explanation cap | Required module loop | Hint policy | Retrieval policy | Target length |
+| Profile | Explanation depth rule | Required module loop | Hint policy | Retrieval policy | Target length |
 |---|---|---|---|---|---|
-| Strict | <= 90 seconds before action | Prediction -> Attempt -> Feedback -> Explanation -> Transfer | 3-level progressive hints; full solution hidden until first attempt | At least 2 delayed retrieval prompts per module from earlier modules | 4-8 modules |
-| Balanced | <= 2-3 minutes before action | Prediction -> Attempt -> Feedback -> Explanation -> Transfer | 2-3 level hints; full solution hidden until first attempt | At least 1 delayed retrieval prompt per module from earlier modules | 4-8 modules |
-| Mastery | <= 2-3 minutes before action | Prediction -> Attempt -> Feedback -> Explanation -> Transfer | 3-level progressive hints; full solution hidden until first attempt | At least 2 delayed retrieval prompts per module from earlier modules, plus at least 3 cumulative retrieval checkpoints across the full course | 10-20 modules |
+| Strict | Match depth to concept complexity using the tiers above. Simple concepts stay concise; complex concepts get full progressive revelation. Never pad for length — every sentence must earn its place. | Prediction -> Attempt -> Feedback -> Explanation -> Transfer | 3-level progressive hints; full solution hidden until first attempt | At least 2 delayed retrieval prompts per module from earlier modules | 4-8 modules |
+| Balanced | Match depth to concept complexity. Use progressive revelation for moderate and complex concepts. Keep simple concepts tight. | Prediction -> Attempt -> Feedback -> Explanation -> Transfer | 2-3 level hints; full solution hidden until first attempt | At least 1 delayed retrieval prompt per module from earlier modules | 4-8 modules |
+| Mastery | Full progressive revelation for every concept tier moderate and above. Foundational concepts get the complete 5-layer treatment across multiple screens. No artificial length caps — depth is governed only by what the learner needs to achieve genuine understanding. | Prediction -> Attempt -> Feedback -> Explanation -> Transfer | 3-level progressive hints; full solution hidden until first attempt | At least 2 delayed retrieval prompts per module from earlier modules, plus at least 3 cumulative retrieval checkpoints across the full course | 10-20 modules |
 
 **Hard requirement for all profiles:** explanations come after learner effort. Never reveal the answer before a meaningful attempt.
 
@@ -196,7 +220,7 @@ The key principle is the same: every module answers "what skill does this build?
 **The key principle:** Every module should connect back to a real human skill. If a module does not help the learner inspect, predict, trace, debug, or modify code with more independence, cut it or reframe it until it does.
 
 **Each module should contain:**
-- 3-6 screens that flow as one learning story
+- 3-8 screens that flow as one learning story (more screens for modules covering complex or foundational concepts; fewer for simple, single-idea modules)
 - At least one code-with-plain-language translation
 - At least one interactive element (quiz, visualization, animation, drag-and-drop, or diagram)
 - One or two "aha!" callout boxes with universal software insights
@@ -366,7 +390,7 @@ The visual design should feel like a **beautiful developer notebook** - warm, in
 - **Warm palette**: Off-white backgrounds, warm grays, no cold whites or blues
 - **Bold accent**: One confident accent color (vermillion, coral, teal - not purple gradients)
 - **Distinctive typography**: Display font with personality for headings (Bricolage Grotesque or similar bold geometric face - never Inter, Roboto, Arial, or Space Grotesk). Clean sans-serif for body (DM Sans or similar). JetBrains Mono for code.
-- **Generous whitespace**: Modules should breathe. Max 3-4 short paragraphs per screen.
+- **Generous whitespace**: Modules should breathe. Paragraph count per screen varies by concept complexity (see Concept Complexity & Explanation Depth table above). Complex and foundational concepts need room for deep prose; simple concepts stay tight. No screen should be a wall of undifferentiated text — strategic breaks are mandatory.
 - **Alternating backgrounds**: Even and odd modules should alternate between two warm background tones for rhythm
 - **Dark code blocks**: IDE-style with Catppuccin-inspired syntax highlighting on deep indigo-charcoal (`#1E1E2E`)
 - **Depth without harshness**: Subtle warm shadows, never black drop shadows
