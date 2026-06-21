@@ -82,8 +82,8 @@
   --space-24: 6rem;
 
   /* LAYOUT */
-  --content-width:      800px;
-  --content-width-wide: 1000px;
+  --content-width:      1100px;
+  --content-width-wide: 1100px;
   --nav-height:         50px;
 
   /* RADII */
@@ -1156,16 +1156,19 @@ p:last-child { margin-bottom: 0; }
   margin-bottom: var(--space-2);
 }
 .attempt-checkbox {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  display: block;
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-sm);
   background: var(--color-bg-warm);
   margin-bottom: var(--space-4);
   font-size: var(--text-sm);
+  line-height: var(--leading-normal);
 }
-.attempt-checkbox input { accent-color: var(--color-accent); }
+.attempt-checkbox input {
+  accent-color: var(--color-accent);
+  margin-right: var(--space-2);
+  vertical-align: text-top;
+}
 .hint-ladder {
   display: flex;
   flex-direction: column;
