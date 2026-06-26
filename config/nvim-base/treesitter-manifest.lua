@@ -46,6 +46,11 @@ return {
 			repo = 'https://github.com/tree-sitter/tree-sitter-rust.git',
 			revision = '77a3747266f4d621d0757825e6b11edcbf991ca5',
 		},
+		{
+			lang = 'swift',
+			repo = 'https://github.com/alex-pinkus/tree-sitter-swift.git',
+			revision = '31d17fe7e818a2048c808b5c6fdc2dc792f4f5b5',
+		},
 	},
 	queries = {
 		core = {
@@ -55,6 +60,7 @@ return {
 			'typescript',
 			'tsx',
 			'rust',
+			'swift',
 			'ecma',
 			'jsx',
 		},

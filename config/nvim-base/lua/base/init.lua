@@ -448,12 +448,45 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 	end
 })
 
+vim.diagnostic.config({
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = '✘',
+			[vim.diagnostic.severity.WARN] = '▲',
+			[vim.diagnostic.severity.INFO] = 'ⓘ',
+			[vim.diagnostic.severity.HINT] = '▶',
+		},
+	},
+})
+
 vim.api.nvim_create_autocmd('LspAttach', {
 	group = augroup,
 	desc = 'LSP keymaps',
 	callback = function(event)
 		local opts = { buffer = event.buf, noremap = true, silent = true }
 		vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+		vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+		vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+		vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+		vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+		vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
+		vim.keymap.set('i', '(', function()
+			vim.api.nvim_feedkeys('(', 'n', false)
+			vim.defer_fn(function() vim.lsp.buf.signature_help() end, 0)
+		end, opts)
+	end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+	group = augroup,
+	pattern = 'python',
+	callback = function(args)
+		vim.bo[args.buf].autoindent = true
+		vim.bo[args.buf].smartindent = false
+		vim.bo[args.buf].cindent = false
+		vim.bo[args.buf].indentexpr = ''
+		vim.bo[args.buf].indentkeys = ''
+		vim.bo[args.buf].matchpairs = '{:},[:]'
 	end,
 })
 
@@ -513,3 +546,30 @@ vim.lsp.config("wat_lsp", {
 })
 
 vim.lsp.enable("wat_lsp")
+
+-- Language LSP modules (collapsed from per-language profiles)
+-- ESP-IDF (nvim-espidf) remains separate for its custom IDF toolchain.
+
+-- C/C++ (clangd) — args from env if available
+local clangd_args = nil
+local clangd_env = vim.env.NVIM_CPP_CLANGD_ARGS or vim.env.CLANGD_ARGS
+if clangd_env and clangd_env ~= "" then
+	clangd_args = vim.split(clangd_env, "%s+", { trimempty = true })
+end
+require("lsp.clangd")(clangd_args)
+
+-- Rust
+require("lsp.rust_analyzer")
+
+-- Go
+require("lsp.gopls")
+
+-- TypeScript / JavaScript
+require("lsp.tsserver")
+
+-- Python (Ty LSP + Ruff formatter)
+require("lsp.ty")
+require("lsp.ruff")
+
+-- Swift
+require("lsp.sourcekit")
