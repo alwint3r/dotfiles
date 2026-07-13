@@ -11,6 +11,13 @@ vim.opt.expandtab = false
 vim.opt.clipboard = 'unnamedplus'
 vim.opt.splitright = true
 
+-- Use Neovim's built-in Tree-sitter folding and keep folds open initially.
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.opt.foldenable = true
+
 vim.keymap.set('n', '<space>w', '<cmd>write<cr>', { desc = 'Save' })
 
 vim.g.mapleader = ','
