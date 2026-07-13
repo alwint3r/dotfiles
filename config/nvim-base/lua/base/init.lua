@@ -290,6 +290,22 @@ require('Comment').setup()
 
 require('nvim-tree').setup({
 	hijack_cursor = false,
+	filesystem_watchers = {
+		-- Build tools can produce thousands of redundant events on Windows.
+		-- Keep the watcher enabled for source files, but skip generated trees.
+		ignore_dirs = {
+			'/.ccls-cache',
+			'/build',
+			'/dist',
+			'/node_modules',
+			'/target',
+			'/.zig-cache',
+			'/\\.venv',
+			'/venv',
+			'/__pycache__',
+			'/.*\\.egg-info',
+		},
+	},
 })
 
 vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeToggle<cr>')
