@@ -29,6 +29,8 @@ vim.keymap.set('n', '<leader>yp', ':let @+=expand("%:p")<CR>', {
 	silent = true,
 	desc = "Copy file path",
 })
+vim.keymap.set('n', '<leader>%', '<cmd>vsp<cr>')
+vim.keymap.set('n', '<leader>"', '<cmd>sp<cr>')
 
 vim.keymap.set({ 'x', 'n' }, 'gy', '"+y')
 vim.keymap.set({ 'x', 'n' }, 'gp', '"+p')
