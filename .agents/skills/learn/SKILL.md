@@ -1,11 +1,27 @@
 ---
 name: learn
-description: Create structured learning materials, study plans, practice prompts, and mastery checks for any topic.
+description: Create conversational or self-contained learning materials, study plans, concept lessons, guided exercises, quizzes, and mastery checks for any domain. Use when the primary deliverable is tutoring, a learning response, or a study document. Do not use for authoring, reviewing, or maintaining repository-ready build-first technical tutorials whose lessons construct concrete artifacts.
 ---
 
 ## Purpose
 
 Use this skill when the user wants to learn a topic in a structured way.
+
+## Routing Boundary
+
+Use this skill when the requested deliverable is:
+
+- conversational or guided tutoring;
+- a lesson, explanation, or concept map;
+- a study plan or learning roadmap;
+- practice questions, exercises, or quizzes;
+- a self-contained learning document.
+
+A project may be used as a learning exercise without turning the material into maintained tutorial documentation.
+
+Do not use this skill when the primary deliverable is a standalone technical tutorial or tutorial series intended to be maintained in a repository, published through a documentation system, or reused as a durable build guide.
+
+For an ambiguous request such as “teach me by building X,” use this skill unless the user specifically asks for an authored or maintained tutorial artifact.
 
 This skill helps an agent:
 - turn a topic into a study plan

@@ -1,275 +1,115 @@
 # Storage Management
 
-Manage cookies, localStorage, sessionStorage, and browser storage state.
+Follow the lifecycle ordering in [`command-contract.md`](command-contract.md): open an isolated session, load authorized state, and only then navigate to the target origin.
 
-## Storage State
+> Browser storage may contain reusable authentication credentials, personal data, and application secrets. Do not inspect, print, save, load, modify, or clear sensitive state unless it is necessary for the authorized task.
 
-Save and restore complete browser state including cookies and storage.
+## Safety Rules
 
-### Save Storage State
+- Use an isolated named session.
+- Prefer non-sensitive test fixtures and in-memory state.
+- Save state only with explicit authorization.
+- Store temporary state outside the repository in a task-specific directory.
+- Restrict file permissions where supported, never commit state files, and delete temporary state after use unless the user asks to retain it.
+- Do not list all cookies or storage values merely for diagnostics. Query the minimum non-sensitive key or domain needed.
+- Never print token-like values in the response or copy them into source files, shell history, logs, screenshots, traces, or generated tests.
+- Clear or delete only state created for the current task. Do not modify a person's normal browser profile.
+
+## Save and Restore Authorized State
+
+Storage-state files can contain cookies and local-storage values sufficient to impersonate a user.
+
+Save from an already-open, explicitly authorized authenticated session:
 
 ```bash
-# Save to auto-generated filename (storage-state-{timestamp}.json)
-playwright-cli state-save
-
-# Save to specific filename
-playwright-cli state-save my-auth-state.json
+mkdir -p /tmp/playwright-task
+chmod 700 /tmp/playwright-task
+playwright-cli -s=authenticated-task state-save /tmp/playwright-task/auth-state.json
+chmod 600 /tmp/playwright-task/auth-state.json
 ```
 
-### Restore Storage State
+Restore into a new isolated session before navigating to the target origin:
 
 ```bash
-# Load storage state from file
-playwright-cli state-load my-auth-state.json
-
-# Reload page to apply cookies
-playwright-cli open https://example.com
+playwright-cli -s=restored-task open about:blank
+playwright-cli -s=restored-task state-load /tmp/playwright-task/auth-state.json
+playwright-cli -s=restored-task goto https://example.com
+playwright-cli -s=restored-task close
 ```
 
-### Storage State File Format
+Remove task-created state when it is no longer needed:
 
-The saved file contains:
-
-```json
-{
-  "cookies": [
-    {
-      "name": "session_id",
-      "value": "abc123",
-      "domain": "example.com",
-      "path": "/",
-      "expires": 1735689600,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "Lax"
-    }
-  ],
-  "origins": [
-    {
-      "origin": "https://example.com",
-      "localStorage": [
-        { "name": "theme", "value": "dark" },
-        { "name": "user_id", "value": "12345" }
-      ]
-    }
-  ]
-}
+```bash
+rm -f /tmp/playwright-task/auth-state.json
 ```
+
+Do not save authenticated state to a generic repository-root filename such as `auth.json`.
 
 ## Cookies
 
-### List All Cookies
+Do not use general cookie-listing commands: they can print authentication values even when filtered to one domain. Do not retrieve cookie values for user-facing output.
+
+Use only synthetic, non-secret values when setting cookies for a test:
 
 ```bash
-playwright-cli cookie-list
+playwright-cli -s=task cookie-set test_variant variant-a --domain=example.com --path=/ --secure --sameSite=Lax
+playwright-cli -s=task cookie-delete test_variant
 ```
 
-### Filter Cookies by Domain
-
-```bash
-playwright-cli cookie-list --domain=example.com
-```
-
-### Filter Cookies by Path
-
-```bash
-playwright-cli cookie-list --path=/api
-```
-
-### Get Specific Cookie
-
-```bash
-playwright-cli cookie-get session_id
-```
-
-### Set a Cookie
-
-```bash
-# Basic cookie
-playwright-cli cookie-set session abc123
-
-# Cookie with options
-playwright-cli cookie-set session abc123 --domain=example.com --path=/ --httpOnly --secure --sameSite=Lax
-
-# Cookie with expiration (Unix timestamp)
-playwright-cli cookie-set remember_me token123 --expires=1735689600
-```
-
-### Delete a Cookie
-
-```bash
-playwright-cli cookie-delete session_id
-```
-
-### Clear All Cookies
-
-```bash
-playwright-cli cookie-clear
-```
-
-### Advanced: Multiple Cookies or Custom Options
-
-For complex scenarios like adding multiple cookies at once, use `run-code`:
-
-```bash
-playwright-cli run-code "async page => {
-  await page.context().addCookies([
-    { name: 'session_id', value: 'sess_abc123', domain: 'example.com', path: '/', httpOnly: true },
-    { name: 'preferences', value: JSON.stringify({ theme: 'dark' }), domain: 'example.com', path: '/' }
-  ]);
-}"
-```
+`cookie-clear` is destructive. Use it only in a disposable task-owned session or when the user explicitly asks to clear the targeted state.
 
 ## Local Storage
 
-### List All localStorage Items
-
 ```bash
-playwright-cli localstorage-list
+playwright-cli -s=task localstorage-get theme
+playwright-cli -s=task localstorage-set theme dark
+playwright-cli -s=task localstorage-delete theme
 ```
 
-### Get Single Value
+Use `localstorage-list` only when all values are known to be non-sensitive. `localstorage-clear` is destructive and is restricted to disposable task-owned sessions unless explicitly authorized.
+
+For multiple non-sensitive test preferences:
 
 ```bash
-playwright-cli localstorage-get token
-```
-
-### Set Value
-
-```bash
-playwright-cli localstorage-set theme dark
-```
-
-### Set JSON Value
-
-```bash
-playwright-cli localstorage-set user_settings '{"theme":"dark","language":"en"}'
-```
-
-### Delete Single Item
-
-```bash
-playwright-cli localstorage-delete token
-```
-
-### Clear All localStorage
-
-```bash
-playwright-cli localstorage-clear
-```
-
-### Advanced: Multiple Operations
-
-For complex scenarios like setting multiple values at once, use `run-code`:
-
-```bash
-playwright-cli run-code "async page => {
+playwright-cli -s=task run-code "async page => {
   await page.evaluate(() => {
-    localStorage.setItem('token', 'jwt_abc123');
-    localStorage.setItem('user_id', '12345');
-    localStorage.setItem('expires_at', Date.now() + 3600000);
+    localStorage.setItem('theme', 'dark');
+    localStorage.setItem('test_variant', 'variant-a');
   });
 }"
 ```
 
 ## Session Storage
 
-### List All sessionStorage Items
-
 ```bash
-playwright-cli sessionstorage-list
+playwright-cli -s=task sessionstorage-get step
+playwright-cli -s=task sessionstorage-set step 3
+playwright-cli -s=task sessionstorage-delete step
 ```
 
-### Get Single Value
-
-```bash
-playwright-cli sessionstorage-get form_data
-```
-
-### Set Value
-
-```bash
-playwright-cli sessionstorage-set step 3
-```
-
-### Delete Single Item
-
-```bash
-playwright-cli sessionstorage-delete step
-```
-
-### Clear sessionStorage
-
-```bash
-playwright-cli sessionstorage-clear
-```
+Use `sessionstorage-list` and `sessionstorage-clear` only under the same minimum-access and task-owned-session rules.
 
 ## IndexedDB
 
-### List Databases
+Inspect or delete IndexedDB only when required by the test. Database contents may be sensitive, and deletion is destructive.
 
 ```bash
-playwright-cli run-code "async page => {
-  return await page.evaluate(async () => {
-    const databases = await indexedDB.databases();
-    return databases;
-  });
+# Metadata only; do not dump database contents.
+playwright-cli -s=task run-code "async page => {
+  return await indexedDB.databases();
 }"
 ```
 
-### Delete Database
+Deleting a database requires explicit authorization unless the browser context is a disposable fixture created for the current test:
 
 ```bash
-playwright-cli run-code "async page => {
-  await page.evaluate(() => {
-    indexedDB.deleteDatabase('myDatabase');
-  });
+playwright-cli -s=task run-code "async page => {
+  await page.evaluate(() => indexedDB.deleteDatabase('test-fixture-db'));
 }"
 ```
 
-## Common Patterns
+## Authentication Workflow
 
-### Authentication State Reuse
+Prefer the repository's existing test authentication fixture. Do not put real usernames or passwords in CLI arguments or generated code.
 
-```bash
-# Step 1: Login and save state
-playwright-cli open https://app.example.com/login
-playwright-cli snapshot
-playwright-cli fill e1 "user@example.com"
-playwright-cli fill e2 "password123"
-playwright-cli click e3
-
-# Save the authenticated state
-playwright-cli state-save auth.json
-
-# Step 2: Later, restore state and skip login
-playwright-cli state-load auth.json
-playwright-cli open https://app.example.com/dashboard
-# Already logged in!
-```
-
-### Save and Restore Roundtrip
-
-```bash
-# Set up authentication state
-playwright-cli open https://example.com
-playwright-cli eval "() => { document.cookie = 'session=abc123'; localStorage.setItem('user', 'john'); }"
-
-# Save state to file
-playwright-cli state-save my-session.json
-
-# ... later, in a new session ...
-
-# Restore state
-playwright-cli state-load my-session.json
-playwright-cli open https://example.com
-# Cookies and localStorage are restored!
-```
-
-## Security Notes
-
-- Never commit storage state files containing auth tokens
-- Add `*.auth-state.json` to `.gitignore`
-- Delete state files after automation completes
-- Use environment variables for sensitive data
-- By default, sessions run in-memory mode which is safer for sensitive operations
+If interactive login is required, let the user complete sensitive credential entry when practical, then save state only if they explicitly authorize reuse. Keep the state scoped to the intended test origin, and remove the state file at completion.

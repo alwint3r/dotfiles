@@ -1,16 +1,16 @@
 # Execution Plans (ExecPlans):
  
-This document describes the requirements for an execution plan ("ExecPlan"), a design document that a coding agent can follow to deliver a working feature or system change. Treat the reader as a complete beginner to this repository: they have only the current working tree and the single ExecPlan file you provide. There is no memory of prior plans and no external context.
+This document describes the requirements for an execution plan ("ExecPlan"), a design document that a coding agent can follow to deliver a working feature or system change. Treat the reader as a complete beginner to this repository: they have only the current working tree and the single ExecPlan you provide, whether inline or persisted. There is no memory of prior plans and no external context.
  
 ## How to use ExecPlans and PLANS.md
  
-When authoring an executable specification (ExecPlan), follow PLANS.md _to the letter_. If it is not in your context, refresh your memory by reading the entire PLANS.md file. Start with only enough repository research to identify the current state, likely touch points, and major unknowns. When creating a spec, start from the skeleton immediately and flesh it out as you do further research. Do not wait for exhaustive understanding before producing the first draft.
+When authoring an executable specification (ExecPlan), follow PLANS.md _to the letter_. If it is not in your context, refresh your memory by reading the entire PLANS.md file. For plan-driven implementation, start with only enough repository research to identify the current state, likely touch points, and major unknowns, then persist the living skeleton before implementation edits and flesh it out as research continues. For planning-only work, perform proportional research and deliver one completed plan rather than exposing an intentionally incomplete skeleton.
  
-When implementing an executable specification (ExecPlan), do not prompt the user for "next steps"; simply proceed to the next milestone. Keep all sections up to date, add or split entries in the list at every stopping point to affirmatively state the progress made and next steps. Resolve ambiguities autonomously, and commit frequently.
+When implementing an executable specification (ExecPlan), do not prompt the user with generic questions such as "What should I do next?" Proceed when the next milestone is safe, reversible, and supported by the plan. Ask a targeted question before consequential decisions involving product behavior, public API compatibility, security or privacy, destructive data changes, irreversible migrations, external services or material cost, unsupported platform changes, or materially different tradeoffs. Keep all sections up to date and add or split `Progress` entries at every stopping point. Do not create, amend, squash, rebase, push, or otherwise modify Git history unless the user explicitly authorizes it or repository instructions require it. When commits are authorized, prefer milestone-sized commits.
  
 When discussing an executable specification (ExecPlan), record decisions in a log in the spec for posterity; it should be unambiguously clear why any change to the specification was made. ExecPlans are living documents, and it should always be possible to restart from _only_ the ExecPlan and no other work.
  
-When researching a design with challenging requirements or significant unknowns, use milestones to implement proof of concepts, "toy implementations", etc., that allow validating whether the user's proposal is feasible. That deeper research happens after the first ExecPlan draft exists. The first meaningful artifact should still be the ExecPlan skeleton populated with current facts, assumptions, and explicit unknowns.
+When researching a design with challenging requirements or significant unknowns during plan-driven implementation, use milestones to implement proof of concepts, "toy implementations", etc., that allow validating whether the user's proposal is feasible. That deeper research happens after the initial living ExecPlan exists. During planning-only work, describe proposed prototypes and their acceptance criteria without implementing them.
  
 ## Requirements
  
@@ -26,7 +26,7 @@ Purpose and intent come first. Begin by explaining, in a few sentences, why the 
  
 The agent executing your plan can list files, read files, search, run the project, and run tests. It does not know any prior context and cannot infer what you meant from earlier milestones. Repeat any assumption you rely on. Do not point to external blogs or docs; if knowledge is required, embed it in the plan itself in your own words. If an ExecPlan builds upon a prior ExecPlan and that file is checked in, incorporate it by reference. If it is not, you must include all relevant context from that plan.
 
-If the environment is read-only or write permission has not yet been granted, draft the full ExecPlan inline immediately after minimal reconnaissance. Keep every required section, and use clearly marked placeholders such as `TBD` for details that require later confirmation. Once write permission is available, persist the ExecPlan before making implementation edits and continue refining that same living document.
+Tool availability is not authorization. Select one delivery mode: a user-specified path, explicit inline delivery, inline delivery by default for planning-only work, or a persisted living plan for plan-driven implementation. In a read-only environment, deliver the plan inline and do not attempt implementation. Do not produce both inline and persisted copies unless the user requests both. Use clearly marked assumptions, open questions, or `TBD` entries for details that cannot be confirmed.
  
 ## Formatting
  
@@ -36,13 +36,13 @@ When writing an ExecPlan to a Markdown (.md) file where the content of the file 
  
 Write in plain prose. Prefer sentences over lists. Avoid checklists, tables, and long enumerations unless brevity would obscure meaning. Checklists are permitted only in the `Progress` section, where they are mandatory. Narrative sections must remain prose-first.
 
-The first draft must look like an active plan, not a finished retrospective. If implementation has not happened yet, say so plainly in `Progress`, `Outcomes & Retrospective`, and related sections rather than filling them as though the work were already done.
+A living plan created for plan-driven implementation must look like an active plan, not a finished retrospective. A completed planning-only deliverable must still say plainly in `Progress`, `Outcomes & Retrospective`, and related sections that implementation has not happened rather than presenting planned work as completed.
  
 ## Guidelines
  
 Self-containment and plain language are paramount. If you introduce a phrase that is not ordinary English ("daemon", "middleware", "RPC gateway", "filter graph"), define it immediately and remind the reader how it manifests in this repository (for example, by naming the files or commands where it appears). Do not say "as defined previously" or "according to the architecture doc." Include the needed explanation here, even if you repeat yourself.
  
-Avoid common failure modes. Do not rely on undefined jargon. Do not describe "the letter of a feature" so narrowly that the resulting code compiles but does nothing meaningful. Do not outsource key decisions to the reader. When ambiguity exists, resolve it in the plan itself and explain why you chose that path. Err on the side of over-explaining user-visible effects and under-specifying incidental implementation details.
+Avoid common failure modes. Do not rely on undefined jargon. Do not describe "the letter of a feature" so narrowly that the resulting code compiles but does nothing meaningful. Do not outsource routine implementation decisions to the reader. Resolve safe, reversible ambiguities from repository evidence and explain the choice. For consequential ambiguities, ask a targeted question during plan-driven implementation or record the options and a recommendation during planning-only work. Err on the side of over-explaining user-visible effects and under-specifying incidental implementation details.
  
 Anchor the plan with observable outcomes. State what the user can do after implementation, the commands to run, and the outputs they should see. Acceptance should be phrased as behavior a human can verify ("after starting the server, navigating to [http://localhost:8080/health](http://localhost:8080/health) returns HTTP 200 with body OK") rather than internal attributes ("added a HealthCheck struct"). If a change is internal, explain how its impact can still be demonstrated (for example, by running tests that fail before and pass after, and by showing a scenario that uses the new behavior).
  
@@ -151,4 +151,4 @@ Prefer additive code changes followed by subtractions that keep tests passing. P
  
 If you follow the guidance above, a single, stateless agent -- or a human novice -- can read your ExecPlan from top to bottom and produce a working, observable result. That is the bar: SELF-CONTAINED, SELF-SUFFICIENT, NOVICE-GUIDING, OUTCOME-FOCUSED.
  
-When you revise a plan, you must ensure your changes are comprehensively reflected across all sections, including the living document sections, and you must write a note at the bottom of the plan describing the change and the reason why. ExecPlans must describe not just the what but the why for almost everything.
+When you revise a plan, ensure changes are comprehensively reflected across all affected sections, including the living document sections. Record meaningful decisions and course corrections as append-only entries in `Decision Log`; routine wording corrections need no history entry. ExecPlans must describe not just the what but the why for almost everything.

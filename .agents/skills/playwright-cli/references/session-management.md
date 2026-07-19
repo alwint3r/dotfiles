@@ -1,169 +1,100 @@
 # Browser Session Management
 
-Run multiple isolated browser sessions concurrently with state persistence.
+The lifecycle and attachment syntax in [`command-contract.md`](command-contract.md) is authoritative.
 
-## Named Browser Sessions
+Use named browser sessions to isolate automation contexts. Each named session has independent cookies, storage, cache, history, and tabs.
 
-Use `-s` flag to isolate browser contexts:
+## Safe Default
+
+Create a unique, in-memory session for the current task:
 
 ```bash
-# Browser 1: Authentication flow
-playwright-cli -s=auth open https://app.example.com/login
-
-# Browser 2: Public browsing (separate cookies, storage)
-playwright-cli -s=public open https://example.com
-
-# Commands are isolated by browser session
-playwright-cli -s=auth fill e1 "user@example.com"
-playwright-cli -s=public snapshot
+playwright-cli -s=task open https://example.com
+playwright-cli -s=task snapshot
+playwright-cli -s=task close
 ```
 
-## Browser Session Isolation Properties
+Use semantic, collision-resistant names when multiple tasks may run concurrently. Close only sessions created for the current task.
 
-Each browser session has independent:
-- Cookies
-- LocalStorage / SessionStorage
-- IndexedDB
-- Cache
-- Browsing history
-- Open tabs
-
-## Browser Session Commands
+## Named Sessions
 
 ```bash
-# List all browser sessions
+playwright-cli -s=public-check open https://example.com
+playwright-cli -s=local-app open http://localhost:3000
+
+playwright-cli -s=public-check snapshot
+playwright-cli -s=local-app snapshot
+
+playwright-cli -s=public-check close
+playwright-cli -s=local-app close
+```
+
+List sessions when necessary to identify the task-owned session:
+
+```bash
 playwright-cli list
+```
 
-# Stop a browser session (close the browser)
-playwright-cli close                # stop the default browser
-playwright-cli -s=mysession close   # stop a named browser
+Do not interact with or close an unfamiliar session merely because it appears in this list.
 
-# Stop all browser sessions
+## Persistent Profiles Are Opt-In
+
+By default, keep browser state in memory. Persistent profiles can retain credentials, history, and site data on disk. Use them only when the user explicitly requests state persistence.
+
+```bash
+# Explicitly authorized, task-owned persistent profile.
+playwright-cli -s=task open https://example.com --persistent
+
+# Explicitly authorized profile directory created for this task.
+playwright-cli -s=task open https://example.com --profile=/tmp/playwright-task/profile
+```
+
+Never point `--profile` at a person's normal browser profile unless the user explicitly requests that exact profile and accepts the exposure risk. Do not reuse a task profile across unrelated origins or users.
+
+Connecting through `--extension` can expose an existing browser session and is subject to the same opt-in requirement.
+
+## Configuration
+
+Use reviewed project configuration when it is part of the requested workflow:
+
+```bash
+playwright-cli -s=task open http://localhost:3000 --config=.playwright/my-cli.json
+playwright-cli -s=task open http://localhost:3000 --browser=firefox
+```
+
+Inspect unfamiliar configuration before using it because it may select persistent profiles, proxies, downloads, or other sensitive paths.
+
+## Destructive Session Commands
+
+These commands can affect state beyond the current page:
+
+```bash
+playwright-cli -s=task delete-data
 playwright-cli close-all
-
-# Forcefully kill all daemon processes (for stale/zombie processes)
 playwright-cli kill-all
-
-# Delete browser session user data (profile directory)
-playwright-cli delete-data                # delete default browser data
-playwright-cli -s=mysession delete-data   # delete named browser data
 ```
 
-## Environment Variable
+Rules:
 
-Set a default browser session name via environment variable:
+- `delete-data` may target only a profile created for the current task, unless the user explicitly authorizes deletion of another profile.
+- Do not use `close-all` for routine cleanup; close task-owned named sessions individually.
+- Do not use `kill-all` unless task-owned Playwright CLI processes are stuck, targeted closure failed, and unrelated sessions will not be disrupted.
+- Never delete stale profiles or session data solely to free disk space without confirming ownership.
 
-```bash
-export PLAYWRIGHT_CLI_SESSION="mysession"
-playwright-cli open example.com  # Uses "mysession" automatically
-```
+## Concurrent Sessions
 
-## Common Patterns
-
-### Concurrent Scraping
+Concurrent sessions are appropriate for isolated comparison or test work. Track every session name and close each one explicitly:
 
 ```bash
-#!/bin/bash
-# Scrape multiple sites concurrently
-
-# Start all browsers
-playwright-cli -s=site1 open https://site1.com &
-playwright-cli -s=site2 open https://site2.com &
-playwright-cli -s=site3 open https://site3.com &
+playwright-cli -s=variant-a open http://localhost:3000/?variant=a &
+playwright-cli -s=variant-b open http://localhost:3000/?variant=b &
 wait
 
-# Take snapshots from each
-playwright-cli -s=site1 snapshot
-playwright-cli -s=site2 snapshot
-playwright-cli -s=site3 snapshot
+playwright-cli -s=variant-a snapshot
+playwright-cli -s=variant-b snapshot
 
-# Cleanup
-playwright-cli close-all
+playwright-cli -s=variant-a close
+playwright-cli -s=variant-b close
 ```
 
-### A/B Testing Sessions
-
-```bash
-# Test different user experiences
-playwright-cli -s=variant-a open "https://app.com?variant=a"
-playwright-cli -s=variant-b open "https://app.com?variant=b"
-
-# Compare
-playwright-cli -s=variant-a screenshot
-playwright-cli -s=variant-b screenshot
-```
-
-### Persistent Profile
-
-By default, browser profile is kept in memory only. Use `--persistent` flag on `open` to persist the browser profile to disk:
-
-```bash
-# Use persistent profile (auto-generated location)
-playwright-cli open https://example.com --persistent
-
-# Use persistent profile with custom directory
-playwright-cli open https://example.com --profile=/path/to/profile
-```
-
-## Default Browser Session
-
-When `-s` is omitted, commands use the default browser session:
-
-```bash
-# These use the same default browser session
-playwright-cli open https://example.com
-playwright-cli snapshot
-playwright-cli close  # Stops default browser
-```
-
-## Browser Session Configuration
-
-Configure a browser session with specific settings when opening:
-
-```bash
-# Open with config file
-playwright-cli open https://example.com --config=.playwright/my-cli.json
-
-# Open with specific browser
-playwright-cli open https://example.com --browser=firefox
-
-# Open in headed mode
-playwright-cli open https://example.com --headed
-
-# Open with persistent profile
-playwright-cli open https://example.com --persistent
-```
-
-## Best Practices
-
-### 1. Name Browser Sessions Semantically
-
-```bash
-# GOOD: Clear purpose
-playwright-cli -s=github-auth open https://github.com
-playwright-cli -s=docs-scrape open https://docs.example.com
-
-# AVOID: Generic names
-playwright-cli -s=s1 open https://github.com
-```
-
-### 2. Always Clean Up
-
-```bash
-# Stop browsers when done
-playwright-cli -s=auth close
-playwright-cli -s=scrape close
-
-# Or stop all at once
-playwright-cli close-all
-
-# If browsers become unresponsive or zombie processes remain
-playwright-cli kill-all
-```
-
-### 3. Delete Stale Browser Data
-
-```bash
-# Remove old browser data to free disk space
-playwright-cli -s=oldsession delete-data
-```
+Avoid broad cleanup commands even after concurrent runs.

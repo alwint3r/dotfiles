@@ -1,39 +1,45 @@
 ---
 name: exec-planner
-description: Create and maintain a self-contained execution plan (ExecPlan) for complex engineering work, with robust fallback behavior when external references fail to load.
+description: Create and maintain a self-contained ExecPlan for complex engineering work. Use when the user explicitly requests an execution plan or asks for plan-driven implementation. Do not invoke solely because a direct implementation task is complex.
 ---
 
 # Exec Planner
 
 ## When To Use
 
-Use this skill when work needs careful planning before implementation, especially for:
+Use this skill when the user:
 
-- complex features
-- significant refactors
-- cross-module changes
-- migration work
-- any request that explicitly asks for an execution plan
+- explicitly asks for an ExecPlan or execution-plan deliverable, or
+- asks for plan-driven implementation of a complex feature, significant refactor, cross-module change, or migration.
 
-## Research and Write-Access Policy
+Do not invoke this skill solely because a direct implementation request is complex. Do not create an ExecPlan artifact unless the request selects or clearly implies one of the delivery modes below.
 
-Create the first ExecPlan draft early, not after exhaustive research.
+## Delivery, Authorization, and Research Policy
 
-1. Start with minimal reconnaissance of the current working directory:
-   - inspect the top-level repository state
-   - identify the most likely files or modules involved
-   - capture the main constraints, assumptions, and unknowns
-2. Do not perform broad or deep codebase research before the first ExecPlan draft exists.
-3. If write permission is not available yet:
-   - draft the full ExecPlan inline in chat immediately after minimal reconnaissance
-   - keep the required section structure
-   - mark unresolved details explicitly with `TBD` or equivalent notes
-   - stop short of implementation edits
-4. If write permission is available:
-   - perform the same minimal reconnaissance
-   - write the initial ExecPlan file under `.agent/execplans/` before implementation edits
-   - then continue deeper research, updating the same plan as discoveries are made
-5. Never let the first saved or shared ExecPlan appear already complete unless the task itself is already complete.
+Tool availability is not user authorization. The ability to write files or create commits does not by itself permit repository changes.
+
+Choose exactly one delivery mode:
+
+1. **User-specified path:** Write the ExecPlan to that path.
+2. **Explicit inline request:** Return the ExecPlan in chat and do not create a plan file.
+3. **Planning-only request with no delivery format:** Return the completed ExecPlan inline by default.
+4. **Plan-driven implementation:** Persist a living ExecPlan before implementation edits. Use an existing repository convention when one exists; otherwise use `.agent/execplans/`.
+5. **Read-only environment:** Return the plan inline and do not attempt implementation edits.
+
+Do not create both an inline plan and a plan file unless the user explicitly requests both. A planning-only request authorizes research and plan production, not implementation edits. A plan-driven implementation request authorizes relevant implementation edits but does not authorize commits, destructive operations, or unrelated repository changes.
+
+For plan-driven implementation:
+
+1. Perform minimal reconnaissance of the current working directory to identify the likely files, constraints, assumptions, and unknowns.
+2. Persist the initial living ExecPlan before implementation edits.
+3. Deepen research and update the same plan as discoveries are made.
+
+For planning-only requests:
+
+1. Perform proportional repository research before delivery.
+2. Produce one completed plan rather than exposing an intentionally incomplete skeleton.
+3. Mark facts that cannot be established as assumptions, open questions, or `TBD`.
+4. Do not perform implementation edits.
 
 ## Resource Loading (Robust)
 
@@ -55,18 +61,17 @@ Do not fail the task only because an external PLANS reference could not be loade
 
 ## Output Contract
 
-Produce exactly one ExecPlan markdown file per planning request and persist it under the project working directory:
+Produce exactly one logical ExecPlan per planning request. Deliver it either as one persisted Markdown file or inline in chat when inline delivery is requested, persistence is not authorized, or the environment is read-only.
 
-- directory: `.agent/execplans/`
-- filename: `execplan_<YYYYMMDD>_<HHMMSS>_<name>.md`
-- naming rules:
-  - `<name>` is lower-case and uses `-` between words
-  - keep names short and task-specific
-  - avoid collisions by regenerating timestamp or appending `-v2`, `-v3`, and so on
+For persisted plans, choose the path in this order:
 
-Here, `.agent/` is the project-local working directory for agent artifacts (not the skill install directory).
+1. User-provided path.
+2. Existing repository ExecPlan convention.
+3. `.agent/execplans/execplan_<YYYYMMDD>_<HHMMSS>_<name>.md`.
 
-The plan file must be executable by a novice contributor with only the repository and that single plan file.
+Do not create `.agent/execplans/` unless a persisted plan is required. For the default filename, `<name>` is lower-case, uses hyphens between words, and is short and task-specific. Avoid collisions by regenerating the timestamp or appending `-v2`, `-v3`, and so on.
+
+A persisted plan must be executable by a novice contributor with only the repository and that single plan file. An inline plan must satisfy the same self-contained quality bar.
 
 ## Required Sections In Every ExecPlan
 
@@ -90,7 +95,7 @@ Every plan must include and keep current:
 Apply these rules whenever external `PLANS.md` cannot be loaded. Even when `PLANS.md` is available, treat these rules as mandatory minimum checks:
 
 1. Write for a complete novice to this repository. Define non-obvious terms immediately in plain language.
-2. Keep the plan fully self-contained. The reader must be able to succeed with only the repository checkout and the ExecPlan file.
+2. Keep the plan fully self-contained. The reader must be able to succeed with only the repository checkout and the delivered ExecPlan, whether inline or persisted.
 3. Begin with user value: explain what becomes possible after the change and how to observe it working.
 4. Keep all required sections present and current: `Purpose / Big Picture`, `Progress`, `Surprises & Discoveries`, `Decision Log`, `Outcomes & Retrospective`, `Context and Orientation`, `Plan of Work`, `Concrete Steps`, `Validation and Acceptance`, `Idempotence and Recovery`, `Artifacts and Notes`, and `Interfaces and Dependencies`.
 5. Keep narrative sections prose-first. Use checklists only in `Progress`, where checkbox items are required.
@@ -102,12 +107,12 @@ Apply these rules whenever external `PLANS.md` cannot be loaded. Even when `PLAN
 11. Anchor acceptance in observable behavior (tests, CLI output, HTTP response, or another user-visible signal), not only internal code changes.
 12. Prefer idempotent, additive, and safe steps. Include retry or rollback guidance for risky actions.
 13. If the plan is provided inline in chat, emit one fenced `md` block and do not nest triple-backtick fences inside it. If the plan is written directly to a `.md` file whose entire content is the plan, omit outer triple backticks.
-14. When revising the plan, propagate updates across all sections and append a short change note at the bottom describing what changed and why.
-15. Treat change notes as append-only history: never edit, reorder, or delete prior change-note entries once written.
-16. During implementation from an ExecPlan, do not ask the user for next steps; proceed to the next milestone autonomously.
-17. Perform only minimal working-tree reconnaissance before the first draft; deeper research belongs after the initial ExecPlan exists.
-18. If write permission is unavailable, produce the full skeleton inline with explicit unknowns instead of delaying for more research.
-19. If write permission is available, persist the initial ExecPlan before any implementation edits.
+14. When revising the plan, propagate updates across every affected section. Record meaningful decisions and course corrections as append-only entries in `Decision Log`; routine wording corrections need no history entry.
+15. During plan-driven implementation, do not ask generic questions such as "What should I do next?" Continue autonomously only when the next step is safe, reversible, and supported by the plan.
+16. Ask a targeted question before deciding consequential matters involving product behavior, public API compatibility, security or privacy, destructive data changes, irreversible migrations, external services or material cost, unsupported platform changes, or materially different tradeoffs.
+17. For planning-only work, record unresolved consequential decisions with options and a recommendation rather than silently choosing.
+18. Apply the research policy for the selected delivery mode: early living draft for plan-driven implementation, proportional research before a completed planning-only deliverable.
+19. Never create, amend, squash, rebase, push, or otherwise modify Git history unless explicitly authorized by the user or repository instructions.
 
 ## Formatting Rules
 
@@ -117,28 +122,32 @@ Apply these rules whenever external `PLANS.md` cannot be loaded. Even when `PLAN
 
 ## Authoring Workflow
 
-1. Resolve PLANS guidance source using the Resource Loading sequence, then follow that guidance.
-2. Resolve purpose and user-visible outcome first.
-3. Perform minimal reconnaissance of the current working tree to identify likely files, constraints, and open questions.
-4. Draft the initial ExecPlan immediately, even if some details are still marked `TBD`.
-5. If write permission is available, save the initial plan under `.agent/execplans/` using the required naming convention before implementation edits. If write permission is unavailable, emit the draft inline and stop before implementation.
-6. After the first draft exists, deepen repository research only as needed to remove important ambiguity.
-7. Write or refine concrete execution and validation steps with expected outcomes.
+1. Resolve PLANS guidance using the Resource Loading sequence.
+2. Determine whether the request is planning-only or plan-driven implementation, then select the authorized delivery mode and output path.
+3. Resolve purpose and user-visible outcome first.
+4. For planning-only work, perform proportional research and deliver one completed inline or persisted plan without implementation edits.
+5. For plan-driven implementation, perform minimal reconnaissance and persist the initial living plan before implementation edits.
+6. Deepen repository research only as needed to remove important ambiguity, and update a persisted living plan as discoveries are made.
+7. Write concrete execution and validation steps with expected outcomes.
 8. Initialize and maintain the living sections (`Progress`, `Surprises & Discoveries`, `Decision Log`, `Outcomes & Retrospective`).
-9. When implementation starts, continuously update the same plan file as a living document.
+9. Ask only targeted questions required by the ambiguity policy; otherwise continue safely through the plan.
+10. Do not modify Git history unless explicitly authorized.
 
 ## Completion Checklist
 
 Before finishing, verify:
 
 - path normalization removed any leading `@` before file reads
-- lookup attempted repo-local then user-level canonical paths before broader fallback paths
+- lookup attempted any caller-provided path, then repo-local and user-level canonical paths before broader fallback paths
 - PLANS guidance was loaded from a valid source, or fallback core rules were applied
 - the plan is self-contained and novice-usable
 - required sections exist and are populated
-- the first plan draft was created after minimal reconnaissance rather than exhaustive pre-research
+- the selected delivery mode and output path match the user's request and authorization
+- planning-only work received proportional research and no implementation edits
+- plan-driven implementation has a persisted living plan created before implementation edits
 - unresolved details are called out explicitly instead of being silently deferred
+- consequential ambiguities were asked or documented with options and a recommendation
 - commands and acceptance checks are concrete
 - file paths are explicit and repository-relative
-- if write permission was available, the plan was saved to `.agent/execplans/` with a unique name before implementation edits
-- change notes are append-only; new entries were added without modifying or removing prior entries
+- meaningful history is captured in append-only `Decision Log` entries
+- no Git history was modified without explicit authorization

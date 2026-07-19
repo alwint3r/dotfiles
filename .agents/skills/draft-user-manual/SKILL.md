@@ -1,6 +1,6 @@
 ---
 name: draft-user-manual
-description: Draft or revise product user manuals, operator guides, installation guides, and deployment manuals from repository context or user notes. Use when Codex needs to create a new manual, expand a stub, or rewrite an existing manual in any language; default to English when the target language is not specified.
+description: Draft or revise product user manuals, operator guides, installation guides, and deployment manuals from repository evidence or user notes. Use when the primary deliverable tells end users, operators, or administrators how to install, configure, operate, maintain, or recover a product. Do not use for general project documentation or learning-oriented tutorials.
 ---
 
 # Draft User Manual

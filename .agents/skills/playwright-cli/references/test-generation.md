@@ -1,88 +1,88 @@
 # Test Generation
 
-Generate Playwright test code automatically as you interact with the browser.
+Follow [`command-contract.md`](command-contract.md) for the browser session lifecycle used while generating actions.
 
-## How It Works
+Playwright CLI actions may emit corresponding Playwright TypeScript snippets that can be adapted into test files.
 
-Every action you perform with `playwright-cli` generates corresponding Playwright TypeScript code.
-This code appears in the output and can be copied directly into your test files.
+> Generated actions are a draft, not a production-ready test. Review destinations, data, selectors, side effects, assertions, and cleanup before adding generated code to the repository.
+
+## Safety Rules
+
+- Explore local, preview, staging, or dedicated test environments when possible.
+- Use synthetic fixture data.
+- Never place real passwords, tokens, payment information, or personal data in CLI arguments or generated source.
+- Do not generate tests from irreversible production actions.
+- Preserve the repository's existing test conventions, fixtures, package manager, and authentication helpers.
 
 ## Example Workflow
 
 ```bash
-# Start a session
-playwright-cli open https://example.com/login
-
-# Take a snapshot to see elements
-playwright-cli snapshot
-# Output shows: e1 [textbox "Email"], e2 [textbox "Password"], e3 [button "Sign In"]
-
-# Fill form fields - generates code automatically
-playwright-cli fill e1 "user@example.com"
-# Ran Playwright code:
-# await page.getByRole('textbox', { name: 'Email' }).fill('user@example.com');
-
-playwright-cli fill e2 "password123"
-# Ran Playwright code:
-# await page.getByRole('textbox', { name: 'Password' }).fill('password123');
-
-playwright-cli click e3
-# Ran Playwright code:
-# await page.getByRole('button', { name: 'Sign In' }).click();
+playwright-cli -s=test-gen open http://localhost:3000/search
+playwright-cli -s=test-gen snapshot
+# Snapshot output identifies a search textbox and submit button.
+playwright-cli -s=test-gen fill e1 "synthetic query"
+playwright-cli -s=test-gen click e2
+playwright-cli -s=test-gen close
 ```
 
-## Building a Test File
-
-Collect the generated code into a Playwright test:
+The emitted actions can be adapted into a test:
 
 ```typescript
 import { test, expect } from '@playwright/test';
 
-test('login flow', async ({ page }) => {
-  // Generated code from playwright-cli session:
-  await page.goto('https://example.com/login');
-  await page.getByRole('textbox', { name: 'Email' }).fill('user@example.com');
-  await page.getByRole('textbox', { name: 'Password' }).fill('password123');
-  await page.getByRole('button', { name: 'Sign In' }).click();
+test('shows results for a search query', async ({ page }) => {
+  await page.goto('/search');
+  await page.getByRole('textbox', { name: 'Search' }).fill('synthetic query');
+  await page.getByRole('button', { name: 'Search' }).click();
 
-  // Add assertions
-  await expect(page).toHaveURL(/.*dashboard/);
+  await expect(page.getByRole('heading', { name: 'Results' })).toBeVisible();
 });
 ```
 
-## Best Practices
+## Authentication
 
-### 1. Use Semantic Locators
-
-The generated code uses role-based locators when possible, which are more resilient:
+Prefer the repository's existing authentication fixture or setup project. If credentials are required, load them through the repository's approved secret mechanism and fail clearly when they are absent:
 
 ```typescript
-// Generated (good - semantic)
-await page.getByRole('button', { name: 'Submit' }).click();
+const email = process.env.E2E_USER_EMAIL;
+const password = process.env.E2E_USER_PASSWORD;
 
-// Avoid (fragile - CSS selectors)
-await page.locator('#submit-btn').click();
+if (!email || !password) {
+  throw new Error('E2E test credentials are not configured');
+}
 ```
 
-### 2. Explore Before Recording
+Do not copy resolved secret values into tests, snapshots, traces, videos, or user-facing output.
 
-Take snapshots to understand the page structure before recording actions:
+## Review Checklist
 
-```bash
-playwright-cli open https://example.com
-playwright-cli snapshot
-# Review the element structure
-playwright-cli click e5
-```
+Before keeping generated code:
 
-### 3. Add Assertions Manually
+1. Replace transient refs and fragile CSS selectors with semantic locators where possible.
+2. Add assertions for the behavior under test; generated actions alone do not verify success.
+3. Remove exploratory or unrelated actions.
+4. Replace captured user data with deterministic fixtures.
+5. Confirm the test cannot affect production or a real account.
+6. Add setup and cleanup for state created by the test.
+7. Run the narrow test, then the repository's relevant test suite.
 
-Generated code captures actions but not assertions. Add expectations in your test:
+## Semantic Locators
+
+Prefer locators based on accessible roles and names:
 
 ```typescript
-// Generated action
 await page.getByRole('button', { name: 'Submit' }).click();
-
-// Manual assertion
-await expect(page.getByText('Success')).toBeVisible();
 ```
+
+Use CSS selectors only when the application exposes no stable semantic locator and the repository has no preferred test identifier.
+
+## Assertions
+
+Generated actions usually need explicit assertions:
+
+```typescript
+await page.getByRole('button', { name: 'Submit' }).click();
+await expect(page.getByText('Saved')).toBeVisible();
+```
+
+Choose observable assertions tied to the user's requested behavior rather than implementation details.
