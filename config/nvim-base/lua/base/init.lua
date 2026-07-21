@@ -290,11 +290,15 @@ end
 setup_treesitter()
 require('Comment').setup()
 
+local nvim_tree_watchers_enabled = vim.fn.has('win32') == 0
+
 require('nvim-tree').setup({
 	hijack_cursor = false,
+	-- Windows filesystem event storms can hang or crash Neovim. Refresh the
+	-- tree when it is entered instead; <leader>ntr remains available on demand.
+	reload_on_bufenter = not nvim_tree_watchers_enabled,
 	filesystem_watchers = {
-		-- Build tools can produce thousands of redundant events on Windows.
-		-- Keep the watcher enabled for source files, but skip generated trees.
+		enable = nvim_tree_watchers_enabled,
 		ignore_dirs = {
 			'/.ccls-cache',
 			'/build',
@@ -309,6 +313,10 @@ require('nvim-tree').setup({
 		},
 	},
 })
+
+-- NvimTree's FugitiveChanged handler reads git.config when filesystem
+-- watchers are disabled, but the plugin leaves that compatibility field empty.
+require('nvim-tree.git').config = require('nvim-tree.config').g
 
 vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeToggle<cr>')
 vim.keymap.set('n', '<leader>ntf', '<cmd>NvimTreeFocus<cr>')
