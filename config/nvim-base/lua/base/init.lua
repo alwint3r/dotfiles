@@ -326,8 +326,19 @@ vim.keymap.set('n', '<leader>G', '<cmd>G<cr>')
 
 local gfh_actions = require('telescope').extensions.git_file_history.actions
 local telescope = require('telescope')
+local telescope_actions = require('telescope.actions')
 
 telescope.setup({
+	defaults = {
+		mappings = {
+			i = {
+				['<C-s>'] = telescope_actions.select_vertical,
+			},
+			n = {
+				['<C-s>'] = telescope_actions.select_vertical,
+			},
+		},
+	},
 	extensions = {
 		fzf = {
 			fuzzy = true,
