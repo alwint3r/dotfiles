@@ -138,6 +138,7 @@ require('bufferline').setup({
 })
 vim.keymap.set('n', '<Tab>', '<cmd>BufferLineCycleNext<cr>', { silent = true })
 vim.keymap.set('n', '<S-Tab>', '<cmd>BufferLineCyclePrev<cr>', { silent = true })
+vim.keymap.set('n', '<leader>bd', '<cmd>Bdelete!<cr>', { silent = true, desc = 'Close current buffer tab' })
 
 require('ibl').setup({})
 
