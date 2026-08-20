@@ -293,8 +293,27 @@ require('Comment').setup()
 
 local nvim_tree_watchers_enabled = vim.fn.has('win32') == 0
 
+local function nvim_tree_on_attach(bufnr)
+	local api = require('nvim-tree.api')
+	local function opts(desc)
+		return {
+			desc = 'nvim-tree: ' .. desc,
+			buffer = bufnr,
+			noremap = true,
+			silent = true,
+			nowait = true,
+		}
+	end
+
+	api.map.on_attach.default(bufnr)
+	vim.keymap.set('n', '<CR>', api.node.open.vertical_no_picker, opts('Open: Vertical Split'))
+	vim.keymap.set('n', '<C-v>', api.node.open.vertical_no_picker, opts('Open: Vertical Split'))
+	vim.keymap.set('n', '<C-x>', api.node.open.horizontal_no_picker, opts('Open: Horizontal Split'))
+end
+
 require('nvim-tree').setup({
 	hijack_cursor = false,
+	on_attach = nvim_tree_on_attach,
 	-- Windows filesystem event storms can hang or crash Neovim. Refresh the
 	-- tree when it is entered instead; <leader>ntr remains available on demand.
 	reload_on_bufenter = not nvim_tree_watchers_enabled,
