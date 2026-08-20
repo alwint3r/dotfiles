@@ -306,7 +306,7 @@ local function nvim_tree_on_attach(bufnr)
 	end
 
 	api.map.on_attach.default(bufnr)
-	vim.keymap.set('n', '<CR>', api.node.open.vertical_no_picker, opts('Open: Vertical Split'))
+	-- vim.keymap.set('n', '<CR>', api.node.open.vertical_no_picker, opts('Open: Vertical Split'))
 	vim.keymap.set('n', '<C-v>', api.node.open.vertical_no_picker, opts('Open: Vertical Split'))
 	vim.keymap.set('n', '<C-x>', api.node.open.horizontal_no_picker, opts('Open: Horizontal Split'))
 end
