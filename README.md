@@ -5,4 +5,4 @@ This works for me.
 - Existing shell installer: `./install.sh`
 - Python installer: `python3 install.py`
 
-Both installers also link Pi extensions into `~/.pi/agent/extensions/`.
+Both installers also link Pi's `AGENTS.md` into `~/.pi/agent/AGENTS.md` and Pi extensions into `~/.pi/agent/extensions/`.

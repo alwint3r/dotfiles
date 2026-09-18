@@ -58,9 +58,46 @@ def install_dir(source_dir: Path, target_dir: Path) -> None:
         print(f"Created symlink {target} -> {item}")
 
 
+def install_file(source_file: Path, target: Path) -> None:
+    global STATUS
+
+    if not source_file.is_file():
+        print(f"Source file not found at {source_file}", file=sys.stderr)
+        STATUS = 1
+        return
+
+    target.parent.mkdir(parents=True, exist_ok=True)
+
+    if target.is_symlink():
+        link_target = os.readlink(target)
+        if link_target == str(source_file):
+            print(f"Symlink already exists for {target.name}")
+            return
+
+        print(
+            f"Conflicting symlink at {target}; remove it manually", file=sys.stderr
+        )
+        STATUS = 1
+        return
+    elif target.exists():
+        print(
+            f"{target} already exists and is not a symlink; skipping",
+            file=sys.stderr,
+        )
+        STATUS = 1
+        return
+
+    os.symlink(str(source_file), str(target))
+    print(f"Created symlink {target} -> {source_file}")
+
+
 def main() -> int:
     install_dir(SCRIPT_DIR / "config", config_target_dir())
     install_dir(SCRIPT_DIR / ".agents", Path.home() / ".agents")
+    install_file(
+        SCRIPT_DIR / "pi" / "agent" / "AGENTS.md",
+        Path.home() / ".pi" / "agent" / "AGENTS.md",
+    )
     install_dir(
         SCRIPT_DIR / "pi" / "agent" / "extensions",
         Path.home() / ".pi" / "agent" / "extensions",

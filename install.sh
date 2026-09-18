@@ -46,8 +46,42 @@ install_dir() {
   shopt -u nullglob dotglob
 }
 
+install_file() {
+  local source_file="$1"
+  local target="$2"
+
+  if [ ! -f "$source_file" ]; then
+    echo "Source file not found at ${source_file}" >&2
+    STATUS=1
+    return
+  fi
+
+  mkdir -p "$(dirname -- "$target")"
+
+  if [ -L "$target" ]; then
+    local link_target
+    link_target="$(readlink "$target")"
+    if [ "$link_target" = "$source_file" ]; then
+      echo "Symlink already exists for $(basename -- "$target")"
+      return
+    else
+      echo "Conflicting symlink at ${target}; remove it manually" >&2
+      STATUS=1
+      return
+    fi
+  elif [ -e "$target" ]; then
+    echo "${target} already exists and is not a symlink; skipping" >&2
+    STATUS=1
+    return
+  fi
+
+  ln -s "$source_file" "$target"
+  echo "Created symlink ${target} -> ${source_file}"
+}
+
 install_dir "${SCRIPT_DIR}/config" "${HOME}/.config"
 install_dir "${SCRIPT_DIR}/.agents" "${HOME}/.agents"
+install_file "${SCRIPT_DIR}/pi/agent/AGENTS.md" "${HOME}/.pi/agent/AGENTS.md"
 install_dir "${SCRIPT_DIR}/pi/agent/extensions" "${HOME}/.pi/agent/extensions"
 
 exit $STATUS
