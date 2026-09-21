@@ -17,6 +17,13 @@ Follow these rules when writing or responding:
   - A function with only one call site should usually remain inline.
   - Extract a re-usable operation only after at least two real call sites expose repeated meaning. This is semantic compression.
 
+## Tests
+
+- Do not add, modify, generate, or update tests unless the user explicitly asks for test changes.
+- This restriction includes test files, fixtures, snapshots, test helpers, and test-only configuration inside the repository.
+- You may run existing tests to verify a change.
+- If verification requires writing new test code and the user did not ask for tests, write only a disposable test or harness in an operating-system temporary directory outside the repository. Do not create it anywhere in the repository or working tree, even as an untracked file. Remove the temporary files after verification.
+
 ## API Design
 
 Design APIs to minimize **integration discontinuity**: the point where a convenient API stops composing with the caller's real program and forces workarounds, a rewrite, or adoption of an unrelated control model.
