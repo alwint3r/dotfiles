@@ -17,6 +17,15 @@ Follow these rules when writing or responding:
   - A function with only one call site should usually remain inline.
   - Extract a re-usable operation only after at least two real call sites expose repeated meaning. This is semantic compression.
 
+## Database Schema Changes
+
+- Do not create, generate, modify, delete, or run schema migrations unless the user explicitly requests or approves that migration work.
+- This rule applies to every database and storage technology, on every platform, including SQL, NoSQL, embedded databases, and browser-local databases. It covers migration files, generated migration metadata, schema-version upgrades, and migration logic embedded in application startup or other code.
+- A request to add a feature, change a model, or fix a database issue is not consent to create a migration. Existing migration tooling or repository conventions do not imply consent either. If a migration appears necessary, explain why and ask for approval before proceeding.
+- For an unreleased application with no existing data or installations to preserve, prefer updating the current schema definition or fresh-install setup directly instead of adding migration history for speculative future upgrades. Confirm these conditions before choosing this approach; zero users alone does not prove that data is disposable.
+- If deployment status or data-preservation requirements are unknown, ask the user rather than assuming that a migration is required or that a database reset is safe. Do not rewrite existing migration history as a substitute for an approved migration.
+- Approval to write or generate a migration is not approval to execute it. Do not reset, recreate, or destructively alter an existing database without explicit approval for that operation.
+
 ## Tests
 
 - Do not add, modify, generate, or update tests unless the user explicitly asks for test changes.
