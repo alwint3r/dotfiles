@@ -74,9 +74,7 @@ def install_file(source_file: Path, target: Path) -> None:
             print(f"Symlink already exists for {target.name}")
             return
 
-        print(
-            f"Conflicting symlink at {target}; remove it manually", file=sys.stderr
-        )
+        print(f"Conflicting symlink at {target}; remove it manually", file=sys.stderr)
         STATUS = 1
         return
     elif target.exists():
@@ -97,6 +95,10 @@ def main() -> int:
     install_file(
         SCRIPT_DIR / "pi" / "agent" / "AGENTS.md",
         Path.home() / ".pi" / "agent" / "AGENTS.md",
+    )
+    install_file(
+        Path.home() / ".pi" / "agent" / "AGENTS.md",
+        Path.home() / ".agents" / "AGENTS.md",
     )
     install_dir(
         SCRIPT_DIR / "pi" / "agent" / "extensions",

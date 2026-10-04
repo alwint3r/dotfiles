@@ -82,6 +82,7 @@ install_file() {
 install_dir "${SCRIPT_DIR}/config" "${HOME}/.config"
 install_dir "${SCRIPT_DIR}/.agents" "${HOME}/.agents"
 install_file "${SCRIPT_DIR}/pi/agent/AGENTS.md" "${HOME}/.pi/agent/AGENTS.md"
+install_file "${HOME}/.pi/agent/AGENTS.md" "${HOME}/.agents/AGENTS.md"
 install_dir "${SCRIPT_DIR}/pi/agent/extensions" "${HOME}/.pi/agent/extensions"
 
 exit $STATUS
