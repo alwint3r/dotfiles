@@ -9,7 +9,7 @@ end
 return function(clangd_arguments)
 	local default_cmds = {
 		"clangd",
-		"--compile-commands-dir=build",
+		-- "--compile-commands-dir=build",
 		"--background-index",
 		"--function-arg-placeholders=false",
 		"--header-insertion=never",
