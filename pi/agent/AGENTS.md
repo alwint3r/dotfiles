@@ -12,10 +12,52 @@ Follow these rules when writing or responding:
 
 ## Programming
 
-- Do not write re-usable code from the get go.
-- Write usable code before writing re-usable code.
-  - A function with only one call site should usually remain inline.
-  - Extract a re-usable operation only after at least two real call sites expose repeated meaning. This is semantic compression.
+Write code that a maintainer can understand by following its execution and
+data flow. Optimize for understanding, not minimum line count, maximum
+reuse, or compliance with a design doctrine.
+
+### Make the concrete implementation readable
+
+- Use names that describe domain meaning and purpose. Include units or
+  lifecycle distinctions when they matter. Avoid vague names and
+  unnecessary abbreviations.
+- Prefer straightforward control flow and explicit intermediate values
+  over dense expressions, nested conditionals, or clever chaining.
+  Extra lines are useful when they expose meaning.
+- Keep related logic together and arrange it in execution order where
+  practical. Use whitespace and short comments to separate meaningful
+  stages.
+- Make state changes, side effects, error paths, and resource lifetimes
+  easy to identify. Do not hide important behavior behind innocent-looking
+  expressions or helpers.
+- Comment on intent, constraints, invariants, and non-obvious reasoning.
+  Do not merely translate the code into prose.
+
+### Separate readability from reusability
+
+- Write usable, concrete code before designing reusable code.
+- Keep an operation inline when that makes the surrounding code easier
+  to understand. A long, coherent function can be clearer than many small
+  functions that require constant navigation.
+- A private helper with one call site is appropriate when it isolates a
+  coherent operation and meaningfully simplifies understanding the caller.
+  Do not extract helpers merely to shorten functions or wrap obvious code.
+- Extract reusable operations only after at least two real call sites
+  expose repeated meaning. Similar syntax alone is not enough. This is
+  semantic compression.
+- Do not introduce interfaces, classes, configuration mechanisms, or
+  architectural layers for hypothetical future needs.
+- Do not apply DRY, SOLID, “one responsibility,” or function-size rules
+  mechanically. Judge a change by whether it makes the actual program
+  easier to understand and modify.
+
+### Review for readability before finishing
+
+- Trace the main path and an important failure path. Can a reader see
+  what happens, which data changes, and where errors go without jumping
+  through unrelated files?
+- Simplify confusing names, dense expressions, excessive nesting, and
+  unnecessary indirection. Do not turn this review into unrelated cleanup.
 
 ## Database Schema Changes
 
@@ -34,6 +76,8 @@ Follow these rules when writing or responding:
 - If verification requires writing new test code and the user did not ask for tests, write only a disposable test or harness in an operating-system temporary directory outside the repository. Do not create it anywhere in the repository or working tree, even as an untracked file. Remove the temporary files after verification.
 
 ## API Design
+
+Apply these guidelines when an API boundary is needed. They are not a requirement to introduce reusable components or architectural layers into ordinary application code.
 
 Design APIs to minimize **integration discontinuity**: the point where a convenient API stops composing with the caller's real program and forces workarounds, a rewrite, or adoption of an unrelated control model.
 
