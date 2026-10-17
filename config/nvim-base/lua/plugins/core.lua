@@ -75,7 +75,20 @@ return {
 	{ 'editorconfig/editorconfig-vim' },
 	{ 'moll/vim-bbye' },
 	-- {'folke/neoconf.nvim'},
-	-- {'folke/neodev.nvim'},
+	{
+		'folke/lazydev.nvim',
+		ft = 'lua',
+		opts = {
+			library = {
+				{ path = '${3rd}/luv/library', words = { 'vim%.uv', 'vim%.loop' } },
+			},
+			-- Let projects with their own LuaLS settings manage their runtime and libraries.
+			enabled = function(root_dir)
+				return not (vim.uv.fs_stat(root_dir .. '/.luarc.json')
+					or vim.uv.fs_stat(root_dir .. '/.luarc.jsonc'))
+			end,
+		},
+	},
 	{ 'neovim/nvim-lspconfig' },
 	{ 'hrsh7th/nvim-cmp' },
 	{ 'hrsh7th/cmp-nvim-lsp' },

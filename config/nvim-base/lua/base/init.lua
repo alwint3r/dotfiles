@@ -449,26 +449,6 @@ require('toggleterm').setup({
 vim.keymap.set('n', '<leader>ts', '<cmd>TermSelect<cr>')
 vim.keymap.set('n', '<leader>tn', '<cmd>TermNew<cr>')
 
-vim.lsp.config('lua_ls', {
-	filetypes = { "lua" },
-	root_markers = {
-		".git",
-		"init.lua",
-		".luarc.json",
-		".luarc.jsonc"
-	},
-	settings = {
-		Lua = {
-			runtime = {
-				version = 'LuaJIT',
-			},
-			diagnostics = {
-				globals = { 'vim' },
-			},
-		},
-	},
-})
-
 local cmp = require('cmp')
 local luasnip = require('luasnip')
 
@@ -481,7 +461,10 @@ cmp.setup({
 		['<Tab>'] = cmp.mapping.select_next_item(),
 		['<S-Tab>'] = cmp.mapping.select_prev_item(),
 	}),
+	-- Prefer lazydev's module suggestions; use LuaLS for other completions.
 	sources = cmp.config.sources({
+		{ name = 'lazydev' },
+	}, {
 		{ name = 'nvim_lsp' },
 		{ name = 'luasnip' },
 	}, {
@@ -614,6 +597,9 @@ vim.lsp.enable("wat_lsp")
 
 -- Language LSP modules (collapsed from per-language profiles)
 -- ESP-IDF (nvim-espidf) remains separate for its custom IDF toolchain.
+
+-- Lua (LuaLS + lazydev for Neovim and plugin types)
+require("lsp.lua_ls")
 
 -- C/C++ (clangd) — args from env if available
 local clangd_args = nil
