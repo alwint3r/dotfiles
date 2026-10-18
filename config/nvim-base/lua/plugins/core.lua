@@ -78,15 +78,12 @@ return {
 	{
 		'folke/lazydev.nvim',
 		ft = 'lua',
+		-- Keep lazydev enabled even with a .luarc.json: project settings may
+		-- only customize diagnostics and still need Neovim API definitions.
 		opts = {
 			library = {
 				{ path = '${3rd}/luv/library', words = { 'vim%.uv', 'vim%.loop' } },
 			},
-			-- Let projects with their own LuaLS settings manage their runtime and libraries.
-			enabled = function(root_dir)
-				return not (vim.uv.fs_stat(root_dir .. '/.luarc.json')
-					or vim.uv.fs_stat(root_dir .. '/.luarc.jsonc'))
-			end,
 		},
 	},
 	{ 'neovim/nvim-lspconfig' },

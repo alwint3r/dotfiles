@@ -269,16 +269,9 @@ local function setup_treesitter()
 	vim.api.nvim_create_autocmd('FileType', {
 		group = group,
 		callback = function(args)
-			if vim.bo[args.buf].filetype == 'markdown' and vim.bo[args.buf].buftype ~= '' then
-				-- Hover/help markdown buffers can still pick up parser-query
-				-- mismatches. Stop treesitter there instead of disabling
-				-- markdown highlighting globally.
-				vim.schedule(function()
-					pcall(vim.treesitter.stop, args.buf)
-				end)
-				return
-			end
-
+			-- Leave special buffers and Markdown to their owners. LSP float
+			-- sizing depends on Tree-sitter concealing code fences; stopping
+			-- it afterwards can push the hover text outside a short window.
 			if vim.bo[args.buf].buftype ~= '' or vim.bo[args.buf].filetype == 'markdown' then
 				return
 			end
