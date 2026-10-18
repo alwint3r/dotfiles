@@ -97,12 +97,20 @@ return {
 	{ 'isak102/telescope-git-file-history.nvim' },
 	{ 'aaronhallaert/advanced-git-search.nvim' },
 	{ 'tpope/vim-rhubarb' },
-	{ 'iamcco/markdown-preview.nvim',
-		cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
-		build = "cd app && npm install && git restore .",
-		init = function()
-			vim.g.mkdp_filetypes = { "markdown" }
+	{
+		'OXY2DEV/markview.nvim',
+		-- Markview handles lazy loading internally.
+		lazy = false,
+		config = function()
+			require('markview').setup({
+				preview = {
+					-- The preview inherits wrapping from the source window.
+					splitview_winopts = { split = 'below' },
+				},
+				renderers = {
+					markdown_table = require('base.markview_tables'),
+				},
+			})
 		end,
-		ft = { "markdown" },
 	},
 }
