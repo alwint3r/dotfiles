@@ -9,12 +9,15 @@ Follow these rules when writing or responding:
 - Avoid idioms, slang, uncommon metaphors, and unnecessarily sophisticated vocabulary.
 - Keep necessary technical terminology and explain unfamiliar terms briefly.
 - Do not simplify the technical content itself.
+- In all written output, including documentation, plans, tutorials, manuals, code comments, and responses, avoid rhetorical contrast patterns such as "X is Y, not Z", "X is not Y; it is Z", and "not X, but Y". This also applies to plural forms and variants split across sentences or joined with dashes.
+- State the intended meaning directly. When a distinction matters, explain the concrete role, behavior, scope, or constraint of each relevant item. Preserve necessary negative facts, warnings, and prohibitions.
+- Before finishing, review the text for these contrast patterns and rewrite them while preserving the technical meaning.
 
 ## Programming
 
 Write code that a maintainer can understand by following its execution and
-data flow. Optimize for understanding, not minimum line count, maximum
-reuse, or compliance with a design doctrine.
+data flow. Prioritize understanding over line-count reduction, reuse, and
+compliance with a design doctrine.
 
 ### Make the concrete implementation readable
 
@@ -85,7 +88,7 @@ Design APIs to minimize **integration discontinuity**: the point where a conveni
 
 - Write the concrete usage before designing the abstraction.
 - Test the proposed API against three call sites: the simplest case, a realistic production case, and an awkward edge case.
-- Extract abstractions from repeated semantics, not from speculative taxonomies or repeated syntax alone.
+- Extract abstractions when concrete uses demonstrate repeated semantics. Require this evidence before grouping code by taxonomy or syntax.
 - Add convenience wrappers last. They must be optional and implementable from the same public primitives available to callers.
 
 ### Preserve caller control
@@ -130,4 +133,4 @@ Review APIs along these axes:
 
 Be suspicious of boolean argument lists, hidden allocators, callback-only designs, global initialization, undocumented call order, retained mirror state, mandatory background threads, and special-case function growth. Use named option structures and small composable operations when they make contracts clearer.
 
-These are defaults for reusable components, not absolute bans. A framework may intentionally own flow control, and a library may need retained state. When choosing such a design, make that scope explicit and document the integration cost.
+Apply these defaults with attention to the reusable component's requirements. A framework may intentionally own flow control, and a library may need retained state. When choosing such a design, make that scope explicit and document the integration cost.
