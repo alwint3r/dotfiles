@@ -38,6 +38,9 @@ vim.keymap.set({ 'x', 'n' }, 'gp', '"+p')
 vim.keymap.set({ 'x', 'n' }, 'x', '"_x')
 vim.keymap.set({ 'x', 'n' }, 'X', '"_d')
 
+vim.keymap.set('x', '<', '<gv', { desc = 'Decrease indent and keep selection' })
+vim.keymap.set('x', '>', '>gv', { desc = 'Increase indent and keep selection' })
+
 vim.keymap.set('n', '<leader>a', ':keepjumps normal! ggVG<cr>')
 
 
