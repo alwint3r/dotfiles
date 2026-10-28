@@ -337,7 +337,7 @@ require('nvim-tree.git').config = require('nvim-tree.config').g
 vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeToggle<cr>')
 vim.keymap.set('n', '<leader>ntf', '<cmd>NvimTreeFocus<cr>')
 vim.keymap.set('n', '<leader>ntr', '<cmd>NvimTreeRefresh<cr>', { desc = 'NvimTree: refresh' })
-vim.keymap.set('n', '<leader>G', '<cmd>G<cr>')
+vim.keymap.set('n', '<leader>G', '<cmd>Git<cr>', { desc = 'Git status' })
 
 local gfh_actions = require('telescope').extensions.git_file_history.actions
 local telescope = require('telescope')

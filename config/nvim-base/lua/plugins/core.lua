@@ -69,7 +69,14 @@ return {
 		build = telescope_fzf_build,
 	},
 	{ 'akinsho/toggleterm.nvim' },
-	{ 'tpope/vim-fugitive' },
+	{
+		'tpope/vim-fugitive',
+		config = function()
+			if vim.fn.has('win32') == 1 then
+				require('base.fugitive_windows')
+			end
+		end,
+	},
 	{ 'lewis6991/gitsigns.nvim' },
 	{ 'tpope/vim-repeat' },
 	{ 'editorconfig/editorconfig-vim' },
